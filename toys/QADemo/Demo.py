@@ -4,8 +4,8 @@ from transformers import AutoModelForQuestionAnswering, AutoTokenizer, pipeline
 
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-tokenizer = AutoTokenizer.from_pretrained('uer/roberta-base-chinese-extractive-qa')
-model = AutoModelForQuestionAnswering.from_pretrained('uer/roberta-base-chinese-extractive-qa')
+tokenizer = AutoTokenizer.from_pretrained('models/roberta-base-chinese-extractive-qa')
+model = AutoModelForQuestionAnswering.from_pretrained('models/roberta-base-chinese-extractive-qa')
 
 questionAnswering = pipeline('question-answering', model=model, tokenizer=tokenizer)
 
@@ -33,6 +33,8 @@ texts = [
 questions = [
     "榕树的原产地在哪里",
     "银杏的寿命有多长",
+    "银杏的种子叫什么",
+    "银杏的种子对于什么疾病有效",
     "杜鹃花分布于哪里",
 ]
 
@@ -52,6 +54,10 @@ if __name__ == '__main__':
     Answer: 中国
     Question: 银杏的寿命有多长
     Answer: 3000年以上
+    Question: 银杏的种子叫什么
+    Answer: 白果
+    Question: 银杏的种子对于什么疾病有效
+    Answer: 哮喘
     Question: 杜鹃花分布于哪里
     Answer: 南半球分布于东南亚和北澳大利亚
     '''
