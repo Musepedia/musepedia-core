@@ -14,7 +14,12 @@ cd QADemo
 mkdir models
 ```
 
+jsonHandler.py是基于SQuAD数据库标准生成json文件的函数，若json格式有变则需修改。
+
+**注意**：生成的json文件并不能直接使用，需要在前加上"data"标签！
+
 ### Notices
+
 - 请在每个Python文件的首行加以注释 `# -*- coding: UTF-8 -*-`，部分Pipeline可能会因编码问题报错。
 - 请在fork代码之后提交PR，请不要直接向仓库中push代码，尤其是master分支上
 - 项目排期和具体的工作安排将在 https://trello.com/ 上显示
