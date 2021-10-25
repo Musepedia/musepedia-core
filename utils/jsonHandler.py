@@ -1,39 +1,49 @@
 # -*- coding: UTF-8 -*-
 
+
 import json
 import csv
 import re
 
 
-def main(path_csv1, path_csv2, path_json1, path_json2, csv_encoding='gbk', json_encoding1='utf-8', json_encoding2='utf-8'):
+# 规范化context字段，去除其中的换行符
+def context_modifier(context):
+    index = context.find('\n')
+    while index != -1:
+        context = context.replace(context[index], '')
+        index = context.find('\n')
+
+
+# 提取json文件中的label和text标签，生成新的csv
+def csv_writer():
+    file = open('./csv/exhibits.csv', 'w', encoding='utf-8')
+    paras = json.load(open('./json/Training_Vegetable.json', 'r', encoding='utf-8'))
+    para_num = len(paras)
+    for i in range(para_num):
+        context = paras[i]['paragraphs'][0]['context']
+        context_modifier(context)
+        label = paras[i]['title']
+        file.write('"' + label + '"')
+        file.write(',')
+        file.write('"' + context + '"')
+        file.write('\n')
+    file.close()
+
+
+# 读取已标注的QA，填入json文件中的空缺并生成新的json文件
+def json_handler():
     # 读取csv，存入列表
-    data = csv.reader(open(path_csv1, 'r', encoding=csv_encoding))
+    data = csv.reader(open('./csv/QA.csv', 'r', encoding='utf-8'))
     qas = []
     for line in data:
         qas.append(line)
     qas.pop(0)
-    
-    # 处理json
-    json1 = json.load(open(path_json1, 'r', encoding=json_encoding1))
-    json2 = open(path_json2, 'w', encoding=json_encoding2)
 
-    paras = json1
+    #
+    paras = json.load(open('./json/Training_Vegetable.json', 'r', encoding='utf-8'))
     para_num = len(paras)
-    # print(paras)
-
-    text_list = []
-    label_list = []
     for i in range(para_num):
         question_cnt = 0
-        # 规范化换行符
-        text = paras[i]['paragraphs'][0]['context']
-        index = text.find('\n')
-        while index != -1:
-            text = text.replace(text[index], '')
-            index = text.find('\n')
-        text_list.append(text)
-        label = paras[i]['title']
-        label_list.append(label)
         for qa in qas:
             qid = qa[0]
             if int(qid) == i:
@@ -48,24 +58,9 @@ def main(path_csv1, path_csv2, path_json1, path_json2, csv_encoding='gbk', json_
                 ret_dict = {'question': question, 'id': id, 'answers': [ans_dict]}
                 question_cnt += 1
                 paras[i]['paragraphs'][0]['qas'].append(ret_dict)
-    json.dump(json1, json2, ensure_ascii=False, indent=3)
-    # 将label和text写入新csv
-    csv_2 = open(path_csv2, 'w', encoding='utf-8')
-    csv_2.write('label,text\n')
-    for i in range(len(label_list)):
-        csv_2.write(label_list[i])
-        csv_2.write(',')
-        csv_2.write(text_list[i])
-        csv_2.write('\n')
+    outcome = open('./json/outcome.json', 'w', encoding='utf-8')
+    json.dump(paras, outcome, ensure_ascii=False, indent=3)
 
 
 if __name__ == '__main__':
-    csvpath1 = './QA.csv'
-    csvpath2 = './exhibits.csv'
-    filepath1 = './Botany.json'
-    filepath2 = './Outcome.json'
-    main(csvpath1, csvpath2, filepath1, filepath2)
-
-
-
-
+    json_handler()
