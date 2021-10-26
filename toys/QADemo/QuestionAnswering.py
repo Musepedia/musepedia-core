@@ -2,7 +2,7 @@
 import torch
 from transformers import AutoModelForQuestionAnswering, AutoTokenizer, pipeline
 
-MODEL_PATH = '../models/roberta-base-chinese-extractive-qa'
+MODEL_PATH = 'toys/QADemo/models/roberta-base-chinese-extractive-qa'
 
 
 def get_answer(question, text):
