@@ -16,9 +16,13 @@ mkdir models
 
 jsonHandler.py是基于SQuAD数据库标准生成json文件的函数，若json格式有变则需修改。
 
+使用时，建议在utils/csv/和utils/json/下存放待处理的数据文件。
+
 **新增了生成label和text的csv的功能**
 
 **注意**：生成的json文件并不能直接使用，需要在前加上"data"标签！
+
+f1_evaluator是根据模型得出的结果与人工标注的结果计算得到的评估分数。
 
 ### Notices
 

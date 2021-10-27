@@ -5,6 +5,30 @@ import json
 import csv
 import re
 
+# 获取questions
+def get_questions():
+    file1 = open('./csv/QA.csv', 'r', encoding='utf-8')
+    file2 = open('./csv/questions.csv', 'w', encoding='utf-8')
+    for line in file1:
+        question = line.split(',')[1]
+        question = question.replace('?', '')
+        question = question.replace('？', '')
+        file2.write(question + '\n')
+
+
+# 读取已标注的QA，生成存放QA的列表
+def qa_list():
+    file = open('./csv/QA.csv', 'r', encoding='utf-8')
+    qas = []
+    for line in file:
+        # print(line)
+        tmp = line.split(',')
+        tmp.pop()
+        # print(tmp)
+        qas.append(tmp)
+    qas.pop(0)
+    return qas
+
 
 # 规范化context字段，去除其中的换行符
 def context_modifier(context):
@@ -13,6 +37,17 @@ def context_modifier(context):
         context = context.replace(context[index], '')
         index = context.find('\n')
 
+
+#
+def get_texts():
+    texts = []
+    paras = json.load(open('./json/Training_Vegetable.json', 'r', encoding='utf-8'))
+    para_num = len(paras)
+    for i in range(para_num):
+        context = paras[i]['paragraphs'][0]['context']
+        context_modifier(context)
+        texts.append(context)
+    return texts
 
 # 提取json文件中的label和text标签，生成新的csv
 def csv_writer():
@@ -32,14 +67,8 @@ def csv_writer():
 
 # 读取已标注的QA，填入json文件中的空缺并生成新的json文件
 def json_handler():
-    # 读取csv，存入列表
-    data = csv.reader(open('./csv/QA.csv', 'r', encoding='utf-8'))
-    qas = []
-    for line in data:
-        qas.append(line)
-    qas.pop(0)
+    qas = qa_list()
 
-    #
     paras = json.load(open('./json/Training_Vegetable.json', 'r', encoding='utf-8'))
     para_num = len(paras)
     for i in range(para_num):
@@ -63,4 +92,7 @@ def json_handler():
 
 
 if __name__ == '__main__':
-    json_handler()
+    # # print(len(get_texts()))
+    # print(qa_list())
+    # print(qa_list())
+    get_questions()
