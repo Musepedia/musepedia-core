@@ -3,17 +3,16 @@
 import time
 
 import grpc
-import proto
 
 from concurrent import futures
-from proto import QA_pb2, QA_pb2_grpc
-from toys.QADemo.QuestionAnswering import get_answer
+from server.proto import QA_pb2_grpc, QA_pb2
+from src.qa.core.QuestionAnswering import get_answer
 
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 
-class Greeter(proto.QA_pb2_grpc.MyServiceServicer):
+class Greeter(QA_pb2_grpc.MyServiceServicer):
     def SayHello(self, request, context):
         result = get_answer(request.question, request.text)
         return QA_pb2.HelloReply(answer='%s' % result)

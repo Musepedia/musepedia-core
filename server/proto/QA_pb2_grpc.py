@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import proto.QA_pb2 as QA__pb2
+import server.proto.QA_pb2 as QA__pb2
 
 
 class MyServiceStub(object):

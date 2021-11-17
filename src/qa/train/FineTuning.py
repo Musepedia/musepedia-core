@@ -4,8 +4,8 @@ from transformers import AutoModelForQuestionAnswering, AutoTokenizer, pipeline
 
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-tokenizer = AutoTokenizer.from_pretrained('models/roberta-base-chinese-extractive-qa')
-model = AutoModelForQuestionAnswering.from_pretrained('models/roberta-base-chinese-extractive-qa').to(DEVICE)
+tokenizer = AutoTokenizer.from_pretrained('../models/roberta-base-chinese-extractive-qa')
+model = AutoModelForQuestionAnswering.from_pretrained('../models/roberta-base-chinese-extractive-qa').to(DEVICE)
 
 
 text = r"""

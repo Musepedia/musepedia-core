@@ -1,6 +1,7 @@
 # MGS-core
 ### QA-RS-Based-Museum-Guide-System
 - 本仓库包含项目的Question Answering和Recommender System算法，不包含业务代码（数据分析模块除外）
+- Version 1.0.1
 
 ### Requirements
 - Python >= 3
@@ -27,7 +28,7 @@ mkdir models
 - 项目排期和具体的工作安排将在 https://trello.com/ 上显示
 
 ### Update Logs
-- Demo.py 支持多问题在多文本中搜索答案
+- 1.0.x版本将对项目文件重新整理，common文件夹放工程需要的程序，server放grpc相关程序，src放QA和RS算法相关程序，utils放工具类
 
 ### Bug Report
 - Demo中的Pipeline可能会截取部分答案内容
