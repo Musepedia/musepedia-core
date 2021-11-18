@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import grpc
+import os
+import sys
 import time
 
-import grpc
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from concurrent import futures
 from server.proto import QA_pb2_grpc, QA_pb2
