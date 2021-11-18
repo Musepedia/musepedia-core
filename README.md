@@ -1,7 +1,7 @@
 # MGS-core
 ### QA-RS-Based-Museum-Guide-System
 - 本仓库包含项目的Question Answering和Recommender System算法，不包含业务代码（数据分析模块除外）
-- **Version 1.0.2**
+- **Version 1.0.3**
 
 ### Requirements
 - Python >= 3
@@ -36,6 +36,7 @@ python server/Server.py
 
 ### Update Logs
 - 1.0.x版本将对项目文件重新整理，common文件夹放工程需要的程序，server放grpc相关程序，src放QA和RS算法相关程序，utils放工具类
+- 1.0.3 修复了问题回答缓慢的bug，现在模型加载在grpc服务启动前完成
 
 ### Bug Report
-- Demo中的Pipeline可能会截取部分答案内容
+- 内存泄漏问题可能仍然存在（推测在`server()`中存在未被Python解释器回收的垃圾）

@@ -5,10 +5,14 @@ from transformers import AutoModelForQuestionAnswering, AutoTokenizer, pipeline
 MODEL_PATH = 'src/qa/models/roberta-base-chinese-extractive-qa'
 
 
-def get_answer(question, text):
+def preload():
     tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
     model = AutoModelForQuestionAnswering.from_pretrained(MODEL_PATH)
 
+    return tokenizer, model
+
+
+def get_answer(tokenizer, model, question, text):
     inputs = tokenizer(question, text, add_special_tokens=True, return_tensors='pt')
     inputIds = torch.tensor(inputs['input_ids'].tolist()[0])
     outputs = model(**inputs)
