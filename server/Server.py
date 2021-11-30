@@ -38,4 +38,3 @@ def serve(tokenizer, model):
 if __name__ == '__main__':
     tokenizer, model = preload()
     serve(tokenizer, model)
-
