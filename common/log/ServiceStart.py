@@ -7,7 +7,7 @@ def service_start(func):
     """
 
     def _service_start(*args, **kwargs):
-        logger.add('server.log')
+        logger.add('logs/server.log')
         logger.info('Grpc服务启动.')
         result = func(*args, **kwargs)
         logger.info('Grpc服务结束.')

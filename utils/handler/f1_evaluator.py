@@ -4,15 +4,15 @@
 import os
 import sys
 import jieba
-import jsonHandler
+import utils.handler.JsonHandler as JsonHandler
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 import src.qa.core.QuestionAnswering as QA
 
 def get_input():
-    qas = jsonHandler.qa_list()
-    texts = jsonHandler.get_texts()
+    qas = JsonHandler.qa_list()
+    texts = JsonHandler.get_texts()
     truth_list = []
     answer_list = []
     for qa in qas:
