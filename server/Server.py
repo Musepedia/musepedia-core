@@ -8,6 +8,7 @@ import time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 from common.exception.ExceptionHandler import catch
+from common.log.ServiceStart import service_start
 from concurrent import futures
 from server.proto import QA_pb2_grpc, QA_pb2
 from src.qa.core.QuestionAnswering import preload, get_answer
@@ -26,6 +27,7 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         return QA_pb2.HelloReply(answer='%s' % result)
 
 
+@service_start
 @catch(KeyboardInterrupt)
 def serve(tokenizer, model):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
