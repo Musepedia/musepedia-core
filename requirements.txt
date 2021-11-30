@@ -3,3 +3,5 @@ transformers>=4.10.3
 datasets>=1.14.0
 grpcio>=1.41.0
 grpcio-tools>=1.4.0
+loguru>=0.5.3
+jieba>=0.42.1
