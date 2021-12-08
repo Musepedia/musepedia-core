@@ -7,13 +7,13 @@ service MyService {
     }
 }
 
-// The request message containing the user's name.
+// The request message containing the question and the texts.
 message HelloRequest {
     string question = 1;
-    string text = 2;
+    repeated string texts = 2;
 }
 
-// The response message containing the greetings
+// The response message containing the best answer extracted from the texts
 message HelloReply {
     string answer = 1;
 }
