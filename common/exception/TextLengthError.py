@@ -4,4 +4,4 @@ class TextLengthError(BaseException):
         self._MAX_LENGTH = max_length
 
     def __str__(self):
-        return format("输入的文章长度为 %d，文章长度不得大于 %d" % (self._length, self._MAX_LENGTH))
+        return format("输入的文章长度为 %d，文章长度必须小于 %d" % (self._length, self._MAX_LENGTH))

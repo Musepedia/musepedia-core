@@ -31,9 +31,12 @@ def check_length(max_length=512):
 
     def _check_length(run):
         def wrapper(*args, **kwargs):
+            totalLength = 0  # 问题与文本长度之和不能超过上限max_length-1
             for argument in args:
-                if type(argument) is str and len(argument) > max_length:  # str类型的变量长度不能超过上限max_length
-                    raise TextLengthError(len(argument), max_length)
+                if type(argument) is str:
+                    totalLength += len(argument)
+            if totalLength > max_length - 1:
+                raise TextLengthError(totalLength, max_length)
             result = run(*args, **kwargs)
             return result
         return wrapper

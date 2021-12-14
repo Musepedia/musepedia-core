@@ -1,7 +1,7 @@
 # MGS-core
 ### QA-RS-Based-Museum-Guide-System
 - 本仓库包含项目的Question Answering和Recommender System算法，不包含业务代码（数据分析模块除外）
-- **Version 1.0.8**
+- **Version 1.0.9**
 
 ### Usage
 根据`requirements.txt`要求配置依赖
@@ -34,6 +34,7 @@ python server/Server.py
 - 1.0.3 修复了问题回答缓慢的bug，现在模型加载在grpc服务启动前完成
 - 1.0.6 增加异常处理和日志模块，日志会输出在logs下
 - 2021/12/08 1.0.8 支持一个问题对应多篇文章抽取，会返回正确概率最大的结果作为最佳答案，需要Java端Beta 0.2.2+支持
+- 2021/12/14 1.0.9 修复问题与文章长度之和超过设定值时无法抛出异常的bug
 
 ### Bug Report
 - 内存泄漏问题可能仍然存在（推测在`server()`中存在未被Python解释器回收的垃圾）
