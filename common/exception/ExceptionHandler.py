@@ -1,11 +1,13 @@
 import traceback
 
+from loguru import logger
+
 from common.exception.TextLengthError import TextLengthError
 
 
 def catch(*exception):
     """
-    捕获异常
+    捕获异常，并支持将异常的traceback输出至日志
     :param exception: 异常类型，必须继承BaseException类
     """
 
@@ -15,7 +17,9 @@ def catch(*exception):
             try:
                 result = run(*args, **kwargs)
             except exception:
-                traceback.print_exc()
+                tracebackHandlerId = logger.add('logs/server.log')
+                logger.error(traceback.format_exc())
+                logger.remove(tracebackHandlerId)
             if result is not None:
                 return result
         return wrapper

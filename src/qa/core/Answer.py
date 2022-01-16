@@ -2,13 +2,15 @@ import numpy as np
 
 
 class Answer:
-    def __init__(self, inputs, outputs, pos_with_logit):
+    def __init__(self, tokenizer, inputs, outputs, pos_with_logit):
         """
+        :param tokenizer: tokenizer
         :param inputs: 经过tokenizer tokenize后的输入数据
         :param outputs: 经过模型计算得到的输出
         :param pos_with_logit: 包含答案起始位置与终止位置和logits的tuple
         """
 
+        self._tokenizer = tokenizer
         self._inputs = inputs
         self._posWithLogitPair = pos_with_logit
         self._startScores = outputs.start_logits[0].detach().numpy()
@@ -84,7 +86,7 @@ class Answer:
 
         return np.max(candidates)
 
-    def to_string(self, tokenizer):
+    def to_string(self):
         """
         将答案转为字符串表示
         :param tokenizer: 用于将字符与token映射
@@ -94,6 +96,6 @@ class Answer:
         answerStartPos, answerEndPos = self.get_pos()
         inputIds = self._inputs['input_ids'][0]
 
-        answer = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(inputIds[answerStartPos:answerEndPos]))
+        answer = self._tokenizer.convert_tokens_to_string(self._tokenizer.convert_ids_to_tokens(inputIds[answerStartPos:answerEndPos]))
 
         return answer.replace(' ', '')

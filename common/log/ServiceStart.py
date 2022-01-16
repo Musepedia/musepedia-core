@@ -7,9 +7,14 @@ def service_start(func):
     """
 
     def _service_start(*args, **kwargs):
-        logger.add('logs/server.log')
+        startHandlerId = logger.add('logs/server.log')
         logger.info('Grpc服务启动.')
+        logger.remove(startHandlerId)
+
         result = func(*args, **kwargs)
+
+        endHandlerId = logger.add('logs/server.log')
         logger.info('Grpc服务结束.')
+        logger.remove(endHandlerId)
         return result
     return _service_start
