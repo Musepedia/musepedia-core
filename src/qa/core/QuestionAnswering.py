@@ -7,6 +7,7 @@ from transformers import AutoModelForQuestionAnswering, AutoTokenizer
 
 from common.exception.ExceptionHandler import catch, check_length
 from common.exception.TextLengthError import TextLengthError
+from common.log.QALogging import qa_logging
 from src.qa.core.Answer import Answer
 
 MODEL_PATH = 'src/qa/models/roberta-base-chinese-extractive-qa'
@@ -40,6 +41,7 @@ def get_pos_with_logit(start_logits, end_logits):
 
 @catch(TextLengthError, MemoryError, AttributeError)
 @check_length(512)
+@qa_logging(question_index=2, text_index=3)
 def get_possible_answer(tokenizer, model, question, text):
     """
     处理1个问题对应1篇文本，并得到答案
@@ -57,7 +59,7 @@ def get_possible_answer(tokenizer, model, question, text):
     answerEndLogits = outputs.end_logits[0]
 
     answerParamPair = get_pos_with_logit(answerStartLogits, answerEndLogits)
-    answer = Answer(inputs, outputs, answerParamPair)
+    answer = Answer(tokenizer, inputs, outputs, answerParamPair)
 
     return answer
 
@@ -81,7 +83,7 @@ def get_answer(tokenizer, model, question, texts):
         score = possibleAnswer.get_score()
         if score > maxScore:
             maxScore = score
-            answer = possibleAnswer.to_string(tokenizer)
+            answer = possibleAnswer.to_string()
 
     return answer
 
