@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from loguru import logger
 
-
-_MAX_TEXT_LENGTH_IN_LOG = 20  # 在日志中最大表示的文本长度，超过该长度将用 ... 代替
+from common.log.BaseLogging import *
 
 
 def concat_logging_info(question, text, answer, score):
@@ -18,16 +17,13 @@ def qa_logging(question_index, text_index):
 
     def _qa_logging(run):
         def wrapper(*args, **kwargs):
-            qaHandlerId = logger.add('logs/server.log')
-
             result = run(*args, **kwargs)
             question = args[question_index]
             text = args[text_index]
-            if len(text) > _MAX_TEXT_LENGTH_IN_LOG:
-                text = text[:_MAX_TEXT_LENGTH_IN_LOG] + '...'
+            if len(text) > MAX_TEXT_LENGTH_IN_LOG:
+                text = text[:MAX_TEXT_LENGTH_IN_LOG] + '...'
 
             logger.debug(concat_logging_info(question, text, result.to_string(), result.get_score()))
-            logger.remove(qaHandlerId)
             return result
         return wrapper
     return _qa_logging

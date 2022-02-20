@@ -17,9 +17,7 @@ def catch(*exception):
             try:
                 result = run(*args, **kwargs)
             except exception:
-                tracebackHandlerId = logger.add('logs/server.log')
                 logger.error(traceback.format_exc())
-                logger.remove(tracebackHandlerId)
             if result is not None:
                 return result
         return wrapper

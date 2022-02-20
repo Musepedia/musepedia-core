@@ -4,6 +4,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.idea/httpRequests" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/src/kids/models" />
       <excludeFolder url="file://$MODULE_DIR$/src/qa/data" />
       <excludeFolder url="file://$MODULE_DIR$/src/qa/models" />
     </content>
