@@ -1,7 +1,7 @@
 # MGS-core
 ### QA-RS-Based-Museum-Guide-System
 - 本仓库包含项目的Question Answering和Recommender System算法，不包含业务代码（数据分析模块除外）
-- **Version 1.0.10**
+- **Version 1.0.10-demo**
 
 ### Usage
 根据`requirements.txt`要求配置依赖
@@ -36,6 +36,7 @@ python server/Server.py
 - 2021/12/08 1.0.8 支持一个问题对应多篇文章抽取，会返回正确概率最大的结果作为最佳答案，需要Java端Beta 0.2.2+支持
 - 2021/12/14 1.0.9 修复问题与文章长度之和超过设定值时无法抛出异常的bug
 - 2022/01/16 1.0.10 支持更复杂的日志输出，包括问答信息和异常traceback
+- 2022/03/05 1.0.10-demo 支持同时展示答案和抽取的文本，**仅供Demo演示使用**，仅与Java端（Beta 0.2.4-demo）兼容
 
 ### Bug Report
 - 内存泄漏问题可能仍然存在（推测在`server()`中存在未被Python解释器回收的垃圾）

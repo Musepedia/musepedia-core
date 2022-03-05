@@ -71,11 +71,12 @@ def get_answer(tokenizer, model, question, texts):
     :param model: 模型
     :param question: 问题
     :param texts: 待抽取的文本集合（必须是可迭代对象）
-    :return: 问题对应的答案，如果没有答案，那么返回[CLS]
+    :return: 问题对应的答案和对应抽取的文本，如果没有答案，那么返回[CLS]
     """
 
     maxScore = 0
     answer = ""
+    textForAnswer = ""
     for text in texts:
         possibleAnswer = get_possible_answer(tokenizer, model, question, text)
         if possibleAnswer is None:  # 如果未按预期得到答案，则跳过本轮
@@ -84,8 +85,9 @@ def get_answer(tokenizer, model, question, texts):
         if score > maxScore:
             maxScore = score
             answer = possibleAnswer.to_string()
+            textForAnswer = text
 
-    return answer
+    return answer, textForAnswer
 
 
 if __name__ == '__main__':

@@ -23,8 +23,13 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         self._model = model
 
     def SayHello(self, request, context):
-        result = get_answer(self._tokenizer, self._model, request.question, request.texts)
-        return QA_pb2.HelloReply(answer='%s' % result)
+        answerWithText = QA_pb2.AnswerWithText()
+        answer, text = get_answer(self._tokenizer, self._model, request.question, request.texts)
+        answerWithText.answer = answer
+        answerWithText.text = text
+        # return QA_pb2.HelloReply(answer='%s' % result)
+
+        return QA_pb2.HelloReply(answerWithText=answerWithText)
 
 
 @service_logging
