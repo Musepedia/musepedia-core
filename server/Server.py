@@ -11,7 +11,7 @@ from common.log.BaseLogging import init_logger
 from common.log.ServiceLogging import service_logging
 from concurrent import futures
 from server.proto import QA_pb2_grpc, QA_pb2
-from src.qa.core.QuestionAnswering import preload, get_answer
+from src.qa.core.QuestionAnswering import preload, get_answer, get_answer_parallel
 
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
@@ -23,7 +23,7 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         self._model = model
 
     def SayHello(self, request, context):
-        result = get_answer(self._tokenizer, self._model, request.question, request.texts)
+        result = get_answer_parallel(self._tokenizer, self._model, request.question, request.texts)
         return QA_pb2.HelloReply(answer='%s' % result)
 
 
