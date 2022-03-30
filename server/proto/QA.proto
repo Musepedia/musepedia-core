@@ -7,10 +7,12 @@ service MyService {
     }
 }
 
-// The request message containing the question and the texts.
+// The request message containing the question, the texts and the status.
+// status = 2 requires pyecharts
 message HelloRequest {
     string question = 1;
     repeated string texts = 2;
+    int32 status = 3;
 }
 
 // The response message containing the best answer extracted from the texts

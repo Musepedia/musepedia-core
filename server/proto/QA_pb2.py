@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x15server/proto/QA.proto\"/\n\x0cHelloRequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\r\n\x05texts\x18\x02 \x03(\t\"\x1c\n\nHelloReply\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t25\n\tMyService\x12(\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x15server/proto/QA.proto\"?\n\x0cHelloRequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\r\n\x05texts\x18\x02 \x03(\t\x12\x0e\n\x06status\x18\x03 \x01(\x05\"\x1c\n\nHelloReply\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t25\n\tMyService\x12(\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\"\x00\x62\x06proto3'
 )
 
 
@@ -47,6 +47,13 @@ _HELLOREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='HelloRequest.status', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -60,7 +67,7 @@ _HELLOREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=25,
-  serialized_end=72,
+  serialized_end=88,
 )
 
 
@@ -91,8 +98,8 @@ _HELLOREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=74,
-  serialized_end=102,
+  serialized_start=90,
+  serialized_end=118,
 )
 
 DESCRIPTOR.message_types_by_name['HelloRequest'] = _HELLOREQUEST
@@ -122,8 +129,8 @@ _MYSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=104,
-  serialized_end=157,
+  serialized_start=120,
+  serialized_end=173,
   methods=[
   _descriptor.MethodDescriptor(
     name='SayHello',

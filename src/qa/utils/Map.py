@@ -4,9 +4,10 @@ from pyecharts.render import make_snapshot
 
 from snapshot_phantomjs import snapshot
 import jieba
+import hashlib
 
 
-def MapRender(answer):
+def render_map(answer: str) -> str:
     country_dict = {
         "Somalia": "索马里",
         "Liechtenstein": "列支敦士登",
@@ -249,54 +250,29 @@ def MapRender(answer):
     # print(data)
 
     if flag == 'china':
-       data = province
+        data = province
     else:
-       data = country
+        data = country
 
     # print(data)
     map = (
         Map()
-        .add("", data, flag, is_map_symbol_show=False, name_map=country_dict)
-        .set_global_opts(
+            .add("", data, flag, is_map_symbol_show=False, name_map=country_dict)
+            .set_global_opts(
             visualmap_opts=opts.VisualMapOpts(is_show=False, max_=2)
         )
-        .set_series_opts(
+            .set_series_opts(
             label_opts=opts.LabelOpts(is_show=False)
         )
     )
 
-    # china = (
-    #     Map()
-    #     .add("", province, "china", is_map_symbol_show=False, name_map=country_dict)
-    #     .set_global_opts(
-    #         visualmap_opts=opts.VisualMapOpts(is_show=False, max_=2)
-    #     )
-    #     .set_series_opts(
-    #         label_opts=opts.LabelOpts(is_show=False)
-    #     )
-    # )
-    #
-    make_snapshot(snapshot, map.render(), "map.png")
-    # grid = Grid()
-    # grid.add(
-    #     world,
-    #     grid_opts=opts.GridOpts(
-    #         pos_left="10%"
-    #     ),
-    # )
-
-    # grid.add(
-    #     china,
-    #     grid_opts=opts.GridOpts(
-    #         pos_right="90%"
-    #     )
-    # )
-    # grid.render()
+    filename = str(hashlib.md5(answer))
+    filepath = "/root/mgs/figs/map_" + filename
+    make_snapshot(snapshot, map.render(), filepath)
+    url = "https://abstractmgs.cn/figs/" + filename
+    return url
 
 
 if __name__ == "__main__":
-    data = "在中国、俄罗斯、日本、美国、德国等地均有分布"
-    data1 = "在中国、俄罗斯、日本、美国、德国等地均有分布.在我国福建、山东、上海、内蒙古等地均有分布"
-    # MapRender(data, "world", "world.html")
-    # MapRender(data)
-    MapRender(data1)
+    data = "在中国、俄罗斯、日本、美国、德国等地均有分布.在我国福建、山东、上海、内蒙古等地均有分布"
+    render_map(data)
