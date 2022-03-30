@@ -7,3 +7,4 @@ psutil>=5.8.0
 loguru>=0.5.3
 jieba>=0.42.1
 numpy>=1.18.1
+snapshot_phantomjs==0.0.3

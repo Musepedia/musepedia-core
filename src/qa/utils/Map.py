@@ -1,12 +1,16 @@
-from pyecharts.charts import Map
-from pyecharts import options as opts
-from pyecharts.render import make_snapshot
-
-from snapshot_phantomjs import snapshot
 import jieba
 import hashlib
 
+from pyecharts.charts import Map
+from pyecharts import options as opts
+from pyecharts.render import make_snapshot
+from snapshot_phantomjs import snapshot
 
+
+from common.exception.ExceptionHandler import catch
+
+
+@catch
 def render_map(answer: str) -> str:
     country_dict = {
         "Somalia": "索马里",
@@ -266,7 +270,7 @@ def render_map(answer: str) -> str:
         )
     )
 
-    filename = str(hashlib.md5(answer))
+    filename = str(hashlib.md5(answer.encode('utf-8')).hexdigest()) + '.png'
     filepath = "/root/mgs/figs/map_" + filename
     make_snapshot(snapshot, map.render(), filepath)
     url = "https://abstractmgs.cn/figs/" + filename
@@ -275,4 +279,5 @@ def render_map(answer: str) -> str:
 
 if __name__ == "__main__":
     data = "在中国、俄罗斯、日本、美国、德国等地均有分布.在我国福建、山东、上海、内蒙古等地均有分布"
-    render_map(data)
+    url = render_map(data)
+    print(url)
