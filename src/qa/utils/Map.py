@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import jieba
 import hashlib
 
@@ -10,7 +11,7 @@ from snapshot_phantomjs import snapshot
 from common.exception.ExceptionHandler import catch
 
 
-@catch
+@catch(Exception)
 def render_map(answer: str) -> str:
     country_dict = {
         "Somalia": "索马里",

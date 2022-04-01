@@ -1,7 +1,7 @@
 # MGS-core
 ### QA-RS-Based-Museum-Guide-System
 - 本仓库包含项目的Question Answering和Recommender System算法，不包含业务代码（数据分析模块除外）
-- **Version 1.0.11**
+- **Version 1.0.12**
 
 ### Usage
 根据`requirements.txt`要求配置依赖
