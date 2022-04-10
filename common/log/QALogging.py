@@ -23,7 +23,8 @@ def qa_logging(question_index, text_index):
             if len(text) > MAX_TEXT_LENGTH_IN_LOG:
                 text = text[:MAX_TEXT_LENGTH_IN_LOG] + '...'
 
-            logger.debug(concat_logging_info(question, text, result.to_string(), result.get_score()))
+            # result[0]仅适用于返回结果是tuple的情况
+            logger.debug(concat_logging_info(question, text, result[0].to_string(), result[0].get_score()))
             return result
         return wrapper
     return _qa_logging

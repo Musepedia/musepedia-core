@@ -62,7 +62,7 @@ def get_possible_answer(tokenizer, model, question, text):
     answerParamPair = get_pos_with_logit(answerStartLogits, answerEndLogits)
     answer = Answer(tokenizer, inputs, outputs, answerParamPair)
 
-    return answer
+    return answer, text
 
 
 def wrap_get_possible_answer(args):
@@ -72,8 +72,8 @@ def wrap_get_possible_answer(args):
     :return: tuple 包含答案的分数和文本
     """
 
-    res = get_possible_answer(*args)
-    return res.get_score(), res.to_string()
+    res, text = get_possible_answer(*args)
+    return res.get_score(), res.to_string(), text
 
 
 def get_answer(tokenizer, model, question, texts):
@@ -83,11 +83,12 @@ def get_answer(tokenizer, model, question, texts):
     :param model: 模型
     :param question: 问题
     :param texts: 待抽取的文本集合（必须是可迭代对象）
-    :return: 问题对应的答案，如果没有答案，那么返回[CLS]
+    :return: 问题对应的答案和对应抽取的文本，如果没有答案，那么返回[CLS]
     """
 
     maxScore = 0
     bestAnswer = ""
+    textForBestAnswer = ""
     for text in texts:
         possibleAnswer = get_possible_answer(tokenizer, model, question, text)
         if possibleAnswer is None:  # 如果未按预期得到答案，则跳过本轮
@@ -96,8 +97,9 @@ def get_answer(tokenizer, model, question, texts):
         if score > maxScore:
             maxScore = score
             bestAnswer = possibleAnswer.to_string()
+            textForBestAnswer = text
 
-    return bestAnswer
+    return bestAnswer, textForBestAnswer
 
 
 def get_answer_parallel(tokenizer, model, question, texts, pool_num=4):
@@ -116,13 +118,14 @@ def get_answer_parallel(tokenizer, model, question, texts, pool_num=4):
 
     maxScore = 0
     bestAnswer = ""
-    for possibleAnswer in possibleAnswers:
-        score, answer = possibleAnswer
+    textForBestAnswer = ""
+    for score, answer, text in possibleAnswers:
         if score > maxScore:
             maxScore = score
             bestAnswer = answer
+            textForBestAnswer = text
 
-    return bestAnswer
+    return bestAnswer, textForBestAnswer
 
 
 if __name__ == '__main__':
@@ -151,4 +154,4 @@ if __name__ == '__main__':
 
     tokenizer, model = preload()
     print(get_answer_parallel(tokenizer, model, question, texts))
-    print(get_answer(tokenizer, model, question, texts))
+    # print(get_answer(tokenizer, model, question, texts))

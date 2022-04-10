@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x15server/proto/QA.proto\"?\n\x0cHelloRequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\r\n\x05texts\x18\x02 \x03(\t\x12\x0e\n\x06status\x18\x03 \x01(\x05\"\x1c\n\nHelloReply\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t25\n\tMyService\x12(\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x15server/proto/QA.proto\"?\n\x0cHelloRequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\r\n\x05texts\x18\x02 \x03(\t\x12\x0e\n\x06status\x18\x03 \x01(\x05\".\n\x0e\x41nswerWithText\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\"5\n\nHelloReply\x12\'\n\x0e\x61nswerWithText\x18\x01 \x01(\x0b\x32\x0f.AnswerWithText25\n\tMyService\x12(\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\"\x00\x62\x06proto3'
 )
 
 
@@ -71,17 +71,24 @@ _HELLOREQUEST = _descriptor.Descriptor(
 )
 
 
-_HELLOREPLY = _descriptor.Descriptor(
-  name='HelloReply',
-  full_name='HelloReply',
+_ANSWERWITHTEXT = _descriptor.Descriptor(
+  name='AnswerWithText',
+  full_name='AnswerWithText',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='answer', full_name='HelloReply.answer', index=0,
+      name='answer', full_name='AnswerWithText.answer', index=0,
       number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='text', full_name='AnswerWithText.text', index=1,
+      number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -99,10 +106,44 @@ _HELLOREPLY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=90,
-  serialized_end=118,
+  serialized_end=136,
 )
 
+
+_HELLOREPLY = _descriptor.Descriptor(
+  name='HelloReply',
+  full_name='HelloReply',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='answerWithText', full_name='HelloReply.answerWithText', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=138,
+  serialized_end=191,
+)
+
+_HELLOREPLY.fields_by_name['answerWithText'].message_type = _ANSWERWITHTEXT
 DESCRIPTOR.message_types_by_name['HelloRequest'] = _HELLOREQUEST
+DESCRIPTOR.message_types_by_name['AnswerWithText'] = _ANSWERWITHTEXT
 DESCRIPTOR.message_types_by_name['HelloReply'] = _HELLOREPLY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -112,6 +153,13 @@ HelloRequest = _reflection.GeneratedProtocolMessageType('HelloRequest', (_messag
   # @@protoc_insertion_point(class_scope:HelloRequest)
   })
 _sym_db.RegisterMessage(HelloRequest)
+
+AnswerWithText = _reflection.GeneratedProtocolMessageType('AnswerWithText', (_message.Message,), {
+  'DESCRIPTOR' : _ANSWERWITHTEXT,
+  '__module__' : 'server.proto.QA_pb2'
+  # @@protoc_insertion_point(class_scope:AnswerWithText)
+  })
+_sym_db.RegisterMessage(AnswerWithText)
 
 HelloReply = _reflection.GeneratedProtocolMessageType('HelloReply', (_message.Message,), {
   'DESCRIPTOR' : _HELLOREPLY,
@@ -129,8 +177,8 @@ _MYSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=120,
-  serialized_end=173,
+  serialized_start=193,
+  serialized_end=246,
   methods=[
   _descriptor.MethodDescriptor(
     name='SayHello',
