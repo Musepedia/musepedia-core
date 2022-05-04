@@ -40,16 +40,17 @@ def get_pos_with_logit(start_logits, end_logits):
     return startPosWithLogits[0], endPosWithLogits[0]
 
 
-@catch(TextLengthError, MemoryError, AttributeError)
+@catch()
 @check_length(512)
 @qa_logging(question_index=2, text_index=3)
-def get_possible_answer(tokenizer, model, question, text):
+def get_possible_answer(tokenizer, model, question, text, text_id):
     """
     处理1个问题对应1篇文本，并得到答案
     :param tokenizer: 用于将字符与token映射
     :param model: 模型（现在是Roberta）
     :param question: 问题
     :param text: 待抽取的文本
+    :param text_id: 带抽取的文本对应的id
     :return: 问题对应的答案，如果没有答案，那么返回[CLS]
     """
 
@@ -62,7 +63,7 @@ def get_possible_answer(tokenizer, model, question, text):
     answerParamPair = get_pos_with_logit(answerStartLogits, answerEndLogits)
     answer = Answer(tokenizer, inputs, outputs, answerParamPair)
 
-    return answer, text
+    return answer, text_id
 
 
 def wrap_get_possible_answer(args):
@@ -72,8 +73,8 @@ def wrap_get_possible_answer(args):
     :return: tuple 包含答案的分数和文本
     """
 
-    res, text = get_possible_answer(*args)
-    return res.get_score(), res.to_string(), text
+    res, textId = get_possible_answer(*args)
+    return res.get_score(), res.to_string(), textId
 
 
 def get_answer(tokenizer, model, question, texts):
@@ -88,18 +89,19 @@ def get_answer(tokenizer, model, question, texts):
 
     maxScore = 0
     bestAnswer = ""
-    textForBestAnswer = ""
+    textIdForBestAnswer = 0
     for text in texts:
-        possibleAnswer = get_possible_answer(tokenizer, model, question, text)
+        possibleAnswer, textId = get_possible_answer(tokenizer, model, question, text.text, text.id)
+
         if possibleAnswer is None:  # 如果未按预期得到答案，则跳过本轮
             continue
         score = possibleAnswer.get_score()
         if score > maxScore:
             maxScore = score
             bestAnswer = possibleAnswer.to_string()
-            textForBestAnswer = text
+            textIdForBestAnswer = textId
 
-    return bestAnswer, textForBestAnswer
+    return bestAnswer, textIdForBestAnswer
 
 
 def get_answer_parallel(tokenizer, model, question, texts, pool_num=4):
@@ -114,18 +116,18 @@ def get_answer_parallel(tokenizer, model, question, texts, pool_num=4):
     """
 
     with multiprocessing.Pool(pool_num) as pool:
-        possibleAnswers = pool.map(wrap_get_possible_answer, [(tokenizer, model, question, texts[i]) for i in range(len(texts))])
+        possibleAnswers = pool.map(wrap_get_possible_answer, [(tokenizer, model, question, texts[i].text, texts[i].id) for i in range(len(texts))])
 
     maxScore = 0
     bestAnswer = ""
-    textForBestAnswer = ""
-    for score, answer, text in possibleAnswers:
+    textIdForBestAnswer = 0
+    for score, answer, textId in possibleAnswers:
         if score > maxScore:
             maxScore = score
             bestAnswer = answer
-            textForBestAnswer = text
+            textIdForBestAnswer = textId
 
-    return bestAnswer, textForBestAnswer
+    return bestAnswer, textIdForBestAnswer
 
 
 if __name__ == '__main__':

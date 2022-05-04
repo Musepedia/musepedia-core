@@ -11,7 +11,7 @@ from common.log.BaseLogging import init_logger
 from common.log.ServiceLogging import service_logging
 from concurrent import futures
 from server.proto import QA_pb2_grpc, QA_pb2
-from src.qa.core.QuestionAnswering import preload, get_answer, get_answer_parallel
+from src.qa.core.QuestionAnswering import preload, get_answer_parallel
 from src.qa.utils.Map import render_map
 
 
@@ -23,14 +23,15 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         self._tokenizer = tokenizer
         self._model = model
 
-    def SayHello(self, request, context):
-        answerWithText = QA_pb2.AnswerWithText()
-        answer, text = get_answer_parallel(self._tokenizer, self._model, request.question, request.texts)
+    def SayHello(self, request: QA_pb2.HelloRequest, context):
+        answerWithTextId = QA_pb2.AnswerWithTextId()
+        answer, textId = get_answer_parallel(self._tokenizer, self._model, request.question, request.texts)
         if request.status == 2:
             answer = render_map(answer)
-        answerWithText.answer = answer
-        answerWithText.text = text
-        return QA_pb2.HelloReply(answerWithText='%s' % answerWithText)
+        answerWithTextId.answer = answer
+        answerWithTextId.textId = textId
+
+        return QA_pb2.HelloReply(answerWithTextId=answerWithTextId)
 
 
 @service_logging
