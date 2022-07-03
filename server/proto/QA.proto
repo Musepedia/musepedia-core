@@ -30,3 +30,35 @@ message AnswerWithTextId {
 message HelloReply {
     AnswerWithTextId answerWithTextId = 1;
 }
+
+message QuestionWithExhibitId {
+    string exhibitLabel = 1;
+    string question = 2;
+    int64 freq = 3;
+}
+
+// The request message will be used in analysis of questions
+message QuestionAnalysisRequest {
+    repeated QuestionWithExhibitId questionWithExhibitId = 1;
+}
+
+// The response message will send each question or id with its frequency
+message QuestionAnalysisReply {
+    repeated string questions = 1;
+    repeated int64 questionFreq = 2;
+    repeated string exhibitLabels = 3;
+    repeated int64 labelFreq = 4;
+}
+
+message UserQuestion {
+    string exhibitLabel = 1;
+    string question = 2;
+}
+
+message UserAnalysisRequest {
+    repeated UserQuestion userQuestion = 1;
+}
+
+message UserAnalysisReply {
+    repeated string exhibitLabels = 1;
+}

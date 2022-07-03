@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from server.proto import QA_pb2 as server_dot_proto_dot_QA__pb2
+import QA_pb2 as QA__pb2
 
 
 class MyServiceStub(object):
@@ -17,8 +17,8 @@ class MyServiceStub(object):
         """
         self.SayHello = channel.unary_unary(
                 '/MyService/SayHello',
-                request_serializer=server_dot_proto_dot_QA__pb2.HelloRequest.SerializeToString,
-                response_deserializer=server_dot_proto_dot_QA__pb2.HelloReply.FromString,
+                request_serializer=QA__pb2.HelloRequest.SerializeToString,
+                response_deserializer=QA__pb2.HelloReply.FromString,
                 )
 
 
@@ -38,8 +38,8 @@ def add_MyServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'SayHello': grpc.unary_unary_rpc_method_handler(
                     servicer.SayHello,
-                    request_deserializer=server_dot_proto_dot_QA__pb2.HelloRequest.FromString,
-                    response_serializer=server_dot_proto_dot_QA__pb2.HelloReply.SerializeToString,
+                    request_deserializer=QA__pb2.HelloRequest.FromString,
+                    response_serializer=QA__pb2.HelloReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -64,7 +64,7 @@ class MyService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/MyService/SayHello',
-            server_dot_proto_dot_QA__pb2.HelloRequest.SerializeToString,
-            server_dot_proto_dot_QA__pb2.HelloReply.FromString,
+            QA__pb2.HelloRequest.SerializeToString,
+            QA__pb2.HelloReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

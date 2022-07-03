@@ -13,6 +13,8 @@ from concurrent import futures
 from server.proto import QA_pb2_grpc, QA_pb2
 from src.qa.core.QuestionAnswering import preload, get_answer_parallel
 from src.qa.utils.Map import render_map
+from src.analysis.core.question_analysis import question_analysis
+from src.analysis.core.user_question_analysis import user_question_analysis
 
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
@@ -32,6 +34,15 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         answerWithTextId.textId = textId
 
         return QA_pb2.HelloReply(answerWithTextId=answerWithTextId)
+
+    def QuestionAnalysis(self, request: QA_pb2.QuestionAnalysisRequest, K):
+        questions, questionFreq, labels, labelFreq = question_analysis(request, K)
+        return QA_pb2.QuestionAnalysisReply(questions=questions, questionFreq=questionFreq, exhibitLabels=labels,
+                                            labelFreq=labelFreq)
+
+    def UserQuestionAnalysis(self, request: QA_pb2.UserAnalysisRequest):
+        user_preference = user_question_analysis(request)
+        return QA_pb2.QuestionAnalysisReply(exhibitLabels=user_preference)
 
 
 @service_logging
