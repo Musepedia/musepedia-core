@@ -62,3 +62,25 @@ message UserAnalysisRequest {
 message UserAnalysisReply {
     repeated string exhibitLabels = 1;
 }
+
+
+// Request of information(age) analysis
+// age + exhibit_label
+message InfoAnalysisMessage {
+    int64 age = 1;
+    string exhibitLabel = 2;
+}
+
+message InfoAnalysisRequest {
+    repeated InfoAnalysisMessage infoAnalysisMessage = 1;
+}
+
+// Reply of information(age) analysis
+// Python Dict
+message TopKLabel {
+    repeated string exhibitLabels = 2;
+}
+
+message InfoAnalysisReply {
+    map<string, TopKLabel> ageWithLabels = 1;
+}
