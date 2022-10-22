@@ -4,7 +4,7 @@
 - **Version 1.0.12**
 
 ### Usage
-根据`requirements.txt`要求配置依赖
+根据`requirements.txt`要求配置依赖（请根据本地CUDA版本安装合适的PyTorch v1.5.1，参考https://pytorch.org/get-started/previous-versions/）
 ```shell
 cd MGS-core
 sudo pip install -r requirements.txt
