@@ -10,6 +10,7 @@ from common.exception.ExceptionHandler import catch
 from common.log.BaseLogging import init_logger
 from common.log.ServiceLogging import service_logging
 from concurrent import futures
+from Config import GRPC_PORT
 from server.proto import QA_pb2_grpc, QA_pb2
 from src.qa.core.QuestionAnswering import preload, get_answer_parallel
 from src.qa.utils.Map import render_map
@@ -39,7 +40,7 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
 def serve(tokenizer, model):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     QA_pb2_grpc.add_MyServiceServicer_to_server(Greeter(tokenizer, model), server)
-    server.add_insecure_port('[::]:5555')
+    server.add_insecure_port('[::]:{0}'.format(GRPC_PORT))
     server.start()
     server.wait_for_termination()
 

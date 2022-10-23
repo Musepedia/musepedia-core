@@ -9,7 +9,7 @@ from snapshot_phantomjs import snapshot
 
 
 from common.exception.ExceptionHandler import catch
-
+from Config import MAP_FIGURE_PATH, MAP_URL
 
 @catch(Exception)
 def render_map(answer: str) -> str:
@@ -272,9 +272,9 @@ def render_map(answer: str) -> str:
     )
 
     filename = str(hashlib.md5(answer.encode('utf-8')).hexdigest()) + '.png'
-    filepath = "/root/mgs/figs/map_" + filename
+    filepath = MAP_FIGURE_PATH + filename
     make_snapshot(snapshot, map.render(), filepath)
-    url = "https://abstractmgs.cn/figs/" + filename
+    url = MAP_URL + filename
     return url
 
 

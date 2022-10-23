@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  mgs-core:
+    build: .
+    ports:
+      - "5555:5555"
+    logging:
+      driver: "json-file"
+    volumes:
+      - map-figure:/root/figs
