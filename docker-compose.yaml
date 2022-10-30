@@ -8,4 +8,4 @@ services:
     logging:
       driver: "json-file"
     volumes:
-      - map-figure:/root/figs
+      - /data/static/map:/data/static/map

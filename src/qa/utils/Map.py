@@ -264,7 +264,7 @@ def render_map(answer: str) -> str:
         Map()
             .add("", data, flag, is_map_symbol_show=False, name_map=country_dict)
             .set_global_opts(
-            visualmap_opts=opts.VisualMapOpts(is_show=False, max_=2)
+            visualmap_opts=opts.VisualMapOpts(is_show=False, max_=2, range_color=['#FF6839'])
         )
             .set_series_opts(
             label_opts=opts.LabelOpts(is_show=False)
