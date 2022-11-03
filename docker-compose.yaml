@@ -1,11 +1,19 @@
 version: "3"
 
+networks:
+  mgs_mgs:
+    external: true
+
 services:
   mgs-core:
     build: .
+    restart: always
     ports:
       - "5555:5555"
+    networks:
+      - mgs_mgs
     logging:
       driver: "json-file"
     volumes:
       - /data/static/map:/data/static/map
+      - ./models/:/root/mgs-core/src/qa/models/
