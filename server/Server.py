@@ -12,7 +12,7 @@ from common.log.ServiceLogging import service_logging
 from concurrent import futures
 from Config import GRPC_PORT
 from server.proto import QA_pb2_grpc, QA_pb2
-from src.qa.core.QuestionAnswering import preload, get_answer_parallel
+from src.qa.core.QuestionAnswering import preload, get_answer
 from src.qa.utils.Map import render_map
 
 
@@ -26,7 +26,7 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
 
     def SayHello(self, request: QA_pb2.HelloRequest, context):
         answerWithTextId = QA_pb2.AnswerWithTextId()
-        answer, textId = get_answer_parallel(self._tokenizer, self._model, request.question, request.texts)
+        answer, textId = get_answer(self._tokenizer, self._model, request.question, request.texts)
         if request.status == 2:
             answer = render_map(answer)
         answerWithTextId.answer = answer

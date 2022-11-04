@@ -14,6 +14,7 @@ from src.qa.core.Answer import Answer
 MODEL_PATH = 'src/qa/models/roberta-base-chinese-extractive-qa'
 
 
+@catch(Exception)
 def preload():
     """
     根据模型存储地址，加载tokenizer和模型
@@ -26,6 +27,7 @@ def preload():
     return tokenizer, model
 
 
+@catch(Exception)
 def get_pos_with_logit(start_logits, end_logits):
     """
     计算答案的起始位置和终止位置，以及相应的logits
@@ -40,7 +42,7 @@ def get_pos_with_logit(start_logits, end_logits):
     return startPosWithLogits[0], endPosWithLogits[0]
 
 
-@catch()
+@catch(Exception)
 @check_length(512)
 @qa_logging(question_index=2, text_index=3)
 def get_possible_answer(tokenizer, model, question, text, text_id):
@@ -66,6 +68,7 @@ def get_possible_answer(tokenizer, model, question, text, text_id):
     return answer, text_id
 
 
+@catch(Exception)
 def wrap_get_possible_answer(args):
     """
     封装get_possible_answer()，适用于map()调用
@@ -77,6 +80,7 @@ def wrap_get_possible_answer(args):
     return res.get_score(), res.to_string(), textId
 
 
+@catch(Exception)
 def get_answer(tokenizer, model, question, texts):
     """
     处理1个问题对应多篇文本，将从若干文本中分别抽取答案，同时为每份答案赋予分数（实际是概率），取最高者作为答案
@@ -104,6 +108,7 @@ def get_answer(tokenizer, model, question, texts):
     return bestAnswer, textIdForBestAnswer
 
 
+@catch(Exception)
 def get_answer_parallel(tokenizer, model, question, texts, pool_num=4):
     """
     使用并行的方式，处理1个问题对应多篇文本，将从若干文本中分别抽取答案，同时为每份答案赋予分数（实际是概率），取最高者作为答案
