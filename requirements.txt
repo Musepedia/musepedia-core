@@ -8,3 +8,5 @@ jieba==0.42.1
 numpy==1.18.1
 pyecharts==1.7.1
 snapshot_phantomjs==0.0.3
+paddlepaddle==2.4.0
+rocketqa==1.1.0
