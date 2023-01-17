@@ -2,7 +2,7 @@ import traceback
 
 from loguru import logger
 
-from common.exception.TextLengthError import TextLengthError
+from src.common.exception.TextLengthError import TextLengthError
 
 
 def catch(*exception):
@@ -33,12 +33,12 @@ def check_length(max_length=512):
 
     def _check_length(run):
         def wrapper(*args, **kwargs):
-            totalLength = 0  # 问题与文本长度之和不能超过上限max_length-1
+            total_length = 0  # 问题与文本长度之和不能超过上限max_length-1
             for argument in args:
                 if type(argument) is str:
-                    totalLength += len(argument)
-            if totalLength > max_length - 1:
-                raise TextLengthError(totalLength, max_length)
+                    total_length += len(argument)
+            if total_length > max_length - 1:
+                raise TextLengthError(total_length, max_length)
             result = run(*args, **kwargs)
             return result
         return wrapper

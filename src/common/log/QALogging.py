@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from loguru import logger
 
-from common.log.BaseLogging import *
+from src.common.log.BaseLogging import *
 
 
 def concat_logging_info(question, text, answer, score):

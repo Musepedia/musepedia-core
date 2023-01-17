@@ -1,0 +1,41 @@
+# -*- coding: utf-8 -*-
+
+import grpc
+
+
+from src.common.exception.ExceptionHandler import catch
+from src.common.log.ServiceLogging import service_logging
+from concurrent import futures
+from Config import GRPC_PORT, ROBERTA_MODEL_PATH
+from src.rpc.proto import QA_pb2_grpc, QA_pb2
+from src.qa.core.QuestionAnswering import QAReader
+from src.qa.utils.MapUtil import MapUtil
+
+
+_ONE_DAY_IN_SECONDS = 60 * 60 * 24
+
+
+class Greeter(QA_pb2_grpc.MyServiceServicer):
+    def __init__(self):
+        self._qa_reader = QAReader(model_path=ROBERTA_MODEL_PATH)
+        self._map_util = MapUtil()
+
+    def SayHello(self, request: QA_pb2.HelloRequest, context):
+        answer_with_text_id = QA_pb2.AnswerWithTextId()
+        answer, text_id = self._qa_reader.get_answer(request.question, request.texts)
+        if request.status == 2:
+            answer = self._map_util.render_map(answer)
+        answer_with_text_id.answer = answer
+        answer_with_text_id.textId = text_id
+
+        return QA_pb2.HelloReply(answerWithTextId=answer_with_text_id)
+
+
+@service_logging
+@catch(KeyboardInterrupt)
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    QA_pb2_grpc.add_MyServiceServicer_to_server(Greeter(), server)
+    server.add_insecure_port('[::]:{0}'.format(GRPC_PORT))
+    server.start()
+    server.wait_for_termination()

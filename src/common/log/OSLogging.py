@@ -15,13 +15,13 @@ def os_logging(run):
     """
 
     def _os_logging(*args, **kwargs):
-        currentPid = os.getpid()
-        currentProcess = psutil.Process(currentPid)
-        memoryUsed = currentProcess.memory_info().rss / 1024 / 1024 / 1024
-        memoryTotal = psutil.virtual_memory().total / 1024 / 1024 / 1024
-        memoryUsedPercentage = memoryUsed / memoryTotal
+        current_pid = os.getpid()
+        current_process = psutil.Process(current_pid)
+        memory_used = current_process.memory_info().rss / 1024 / 1024 / 1024
+        memory_total = psutil.virtual_memory().total / 1024 / 1024 / 1024
+        memory_used_percentage = memory_used / memory_total
 
-        logger.warning(concat_logging_info(currentPid, memoryUsed, memoryUsedPercentage))
+        logger.warning(concat_logging_info(current_pid, memory_used, memory_used_percentage))
         result = run(*args, **kwargs)
 
         return result

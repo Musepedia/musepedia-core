@@ -4,67 +4,84 @@ import rocketqa
 
 from transformers import DPRReaderTokenizer, DPRReader
 
-from common.exception.ExceptionHandler import catch
+from src.common.exception.ExceptionHandler import catch
+from src.common.log.ModelLogging import model_logging
 
-MODEL_PATH = 'src/qa/models/dpr-reader-multiset-base'
 
-
-@catch(Exception)
-def preload():
+class DensePassageRetriever:
     """
-    根据模型存储地址，加载tokenizer和模型
-    :return: tokenizer与模型
+    基于稠密段落检索的方法，作为开放域问答检索器的一种实现方案，相比ElasticSearch作为检索器，其精度较高但效率较低
     """
 
-    tokenizer = DPRReaderTokenizer.from_pretrained(MODEL_PATH)
-    model = DPRReader.from_pretrained(MODEL_PATH)
+    FACEBOOK_DPR_MODEL_PATH = '../models/dpr-reader-multiset-base'
+    ROCKETQA_DPR_MODEL_PATH = '../models/zh_dureader_de/config.json'
 
-    return tokenizer, model
+    def __init__(self, model_type='rocket', model_path=ROCKETQA_DPR_MODEL_PATH):
+        self._model_type = model_type.lower()
+        if self._model_type == 'facebook':
+            self._model_path = self.FACEBOOK_DPR_MODEL_PATH
+        else:
+            self._model_path = model_path
+        self._tokenizer, self._model = self.preload(self._model_type)
 
+    @model_logging('DPR模型')
+    @catch(Exception)
+    def preload(self, model_type: str):
+        """
+        根据模型存储地址，加载tokenizer和模型
 
-@catch(Exception)
-def get_top_k_text(tokenizer: DPRReaderTokenizer, model: DPRReader, question: str, texts: [str], titles: [str], k: int) -> [str]:
-    """
-    从texts中找出最可能包含question对应回答的k个文本
-    :param tokenizer: 向量化问题与文本
-    :param model: 模型，这里采用DPR模型
-    :param question: 问题
-    :param texts: 可能包含回答的文本集合
-    :param titles: 每个文本的标题
-    :param k: top k文本
-    :return: k个最可能包含回答的文本集合
-    """
+        :param model_type: 模型类型，支持Facebook的DPR模型和Paddle的RocketQA模型，对于中文语料，默认使用RocketQA模型
+        :return: tokenizer与模型构成的元组
+        """
 
-    inputs = tokenizer(questions=[question] * len(texts),
-                       titles=titles,
-                       texts=texts,
-                       return_tensors='pt',
-                       padding=True,
-                       truncation=True)
-    outputs = model(**inputs)
-    logits = outputs.relevance_logits
+        tokenizer = None
+        model = None
 
-    _, indices = torch.sort(logits, descending=True)
+        if model_type == 'facebook':
+            tokenizer = DPRReaderTokenizer.from_pretrained(self._model_path)
+            model = DPRReader.from_pretrained(self._model_path)
+        elif model_type == 'rocket':
+            model = rocketqa.load_model(self._model_path)
+        else:
+            raise Exception('{0}为不支持的模型类型，仅支持[facebook|rocket]'.format(model_type))
 
-    return [texts[indices[i]] for i in range(k)]
+        return tokenizer, model
 
+    @catch(Exception)
+    def get_top_k_text(self, question: str, texts: [str], titles: [str], k: int) -> [str]:
+        """
+        从texts中找出最可能包含question对应回答的k个文本
 
-@catch(Exception)
-def temp(model, question, texts, titles):
-    assert len(texts) == len(titles)
-    res = model.matching(query=[question] * len(texts), para=texts, title=titles)
-    res = list(res)
+        :param question: 问题
+        :param texts: 可能包含回答的文本集合
+        :param titles: 每个文本的标题
+        :param k: top k文本
+        :return: k个最可能包含回答的文本集合
+        """
 
-    return texts[res.index(max(res))]
+        top_k_texts = []
+        if self._model_type == 'facebook':
+            inputs = self._tokenizer(questions=[question] * len(texts),
+                               titles=titles,
+                               texts=texts,
+                               return_tensors='pt',
+                               padding=True,
+                               truncation=True)
+            outputs = self._model(**inputs)
+            logits = outputs.relevance_logits
+
+            _, indices = torch.sort(logits, descending=True)
+            top_k_texts = [texts[indices[i]] for i in range(k)]
+        elif self._model_type == 'rocket':
+            top_k_texts = list(self._model.matching(query=[question] * len(texts), para=texts, title=titles))
+            top_k_texts = texts[top_k_texts.index(max(top_k_texts))]
+        else:
+            raise Exception('{0}为不支持的模型类型，仅支持[facebook|rocket]'.format(self._model_type))
+
+        return top_k_texts
 
 
 if __name__ == '__main__':
-    question = "When did ginkgo first appear in China"
-    texts = ["Ginkgos are large trees, normally reaching a height of 20–35 m (66–115 ft),[15] with some specimens in China being over 50 m (165 ft). The tree has an angular crown and long, somewhat erratic branches, and is usually deep-rooted and resistant to wind and snow damage. Young trees are often tall and slender, and sparsely branched; the crown becomes broader as the tree ages. A combination of resistance to disease, insect-resistant wood, and the ability to form aerial roots and sprouts makes ginkgos durable, with some specimens claimed to be more than 2,500 years old.[16]",
-             "The leaves are unique among seed plants, being fan-shaped with veins radiating out into the leaf blade, sometimes bifurcating (splitting), but never anastomosing to form a network.[17] Two veins enter the leaf blade at the base and fork repeatedly in two; this is known as dichotomous venation. The leaves are usually 5–10 cm (2–4 in), but sometimes up to 15 cm (6 in) long. The old common name, maidenhair tree, derives from the leaves resembling pinnae of the maidenhair fern, Adiantum capillus-veneris.[citation needed] Ginkgos are prized for their autumn foliage, which is a deep saffron yellow. Leaves of long shoots are usually notched or lobed, but only from the outer surface, between the veins. They are borne both on the more rapidly growing branch tips, where they are alternate and spaced out, and also on the short, stubby spur shoots, where they are clustered at the tips. Leaves are green both on the top and bottom[18] and have stomata on both sides.[19] During autumn, the leaves turn a bright yellow and then fall, sometimes within a short space of time (one to 15 days).[20]",
-             "Ginkgo biloba, commonly known as ginkgo or gingko (/ˈɡɪŋkoʊ, ˈɡɪŋkɡoʊ/ GINK-oh, -⁠goh)[5][6] also known as the maidenhair tree,[7] is a species of tree native to China. It is the last living species in the order Ginkgoales, which first appeared over 290 million years ago. Fossils very similar to the living species, belonging to the genus Ginkgo, extend back to the Middle Jurassic approximately 170 million years ago.[2] The tree was cultivated early in human history and remains commonly planted. Ginkgo leaf extract is commonly used as a dietary supplement, but there is no scientific evidence that it supports human health or is effective against any disease.[8][9]"]
-    titles = ["description", "leaves", "introduction of ginkgo"]
-
     question_chinese = "银杏寿命有多长"
     texts_chinese = ["银杏（学名：Ginkgo biloba），落叶乔木，寿命可达3000年以上。又名公孙树、鸭掌树、鸭脚树、鸭脚子等[4]，其裸露的种子称为白果，叶称蒲扇[5]。属裸子植物银杏门惟一现存物种，和它同门的其他所有物种都已灭绝，因此被称为植物界的“活化石”。已发现的化石可以追溯到2.7亿年前。银杏原产于中国，现广泛种植于全世界，常作为道路景观树种，并被早期引入人类历史。它有多种用途，可作为传统医学用途和食材。",
                      "和它相亲的银杏类植物在两亿七千万年前的二叠纪时就已经生成，属于银杏门。晚三叠纪时，银杏类植物快速发展，之后的侏罗纪和早白垩纪达到了鼎盛时期，银杏类的五个科同时存在，除赤道外广泛分布于世界各大洲。但白垩纪后期被子植物迅速崛起时，银杏类像其它裸子植物一样也急剧衰落。晚白垩纪后除个别发现外，银杏科以外的银杏类植物已基本绝迹。晚白垩纪和古近纪，银杏（主要为银杏属Ginkgo 和似银杏属Ginkgoites）在欧亚大陆和北美高纬度地区呈环北极分布，渐新世时由于寒冷气候不断向南迁徙，并在此之后不断衰落。银杏在中新世末在北美消失，上新世晚期在欧洲消失。250多万年前发生第四纪冰河时期，令银杏数量继续减少，面临绝灭的危机，而中国南部因地理位置适合和气候温和，成为银杏的最后栖息地。[6]中国的银杏大化石纪录始于始新世；日本直至上新世，甚至更新世早期都有银杏叶化石发现，但没有发现繁殖器官。而现在的银杏是这个门的植物中生存至今的唯一成员，因此又被称为“活化石（孑遗植物）”。[7]",
@@ -73,12 +90,5 @@ if __name__ == '__main__':
 
     repeat = 1
 
-    # tokenizer, model = preload()
-    # print(get_top_k_text(tokenizer, model, question_chinese, texts_chinese * repeat, titles_chinese * repeat, 2))
-
-    model = rocketqa.load_model('/Users/sornk/Downloads/zh_dureader_de/config.json')
-    # res = model.matching(query=model.encode_query(question), para=model.encode_para(texts), title=titles)
-
-    texts_chinese[0] = texts_chinese[0] * 2
-
-    print(temp(model, question_chinese, texts_chinese, titles_chinese))
+    dense_passage_retriever = DensePassageRetriever(model_type='facebook')
+    print(dense_passage_retriever.get_top_k_text(question_chinese, texts_chinese, titles_chinese, 2))

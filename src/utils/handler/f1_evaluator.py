@@ -4,7 +4,7 @@
 import os
 import sys
 import jieba
-import utils.handler.JsonHandler as JsonHandler
+import src.utils.handler.JsonHandler as JsonHandler
 
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 

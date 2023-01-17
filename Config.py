@@ -11,3 +11,12 @@ SUB_DOMAIN_NAME = 'static'
 
 # 定位地图的URL
 MAP_URL = 'https://{0}.{1}/{2}/'.format(SUB_DOMAIN_NAME, DOMAIN_NAME, MAP_FIGURE_DIRECTORY_NAME)
+
+# RoBERTa模型的路径
+ROBERTA_MODEL_PATH = 'src/qa/models/roberta-base-chinese-extractive-qa'
+
+# DPR模型（基于Facebook）的路径
+FACEBOOK_DPR_MODEL_PATH = 'src/qa/models/dpr-reader-multiset-base'
+
+# DPR模型（基于RocketQA）的路径
+ROCKETQA_MODEL_PATH = 'src/qa/models/zh_dureader_de/config.json'
