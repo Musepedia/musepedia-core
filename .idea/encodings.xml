@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/logs/server_2023-01-18_17-59-53_736281.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/server_2023-01-18_18-00-12_637801.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/server_2023-01-18_18-00-43_689450.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/server_2023-01-18_18-01-25_848107.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/server_2023-01-19_09-50-39_630261.log" charset="GBK" />
     <file url="file://$PROJECT_DIR$/src/rpc/server.log" charset="GBK" />
   </component>
 </project>

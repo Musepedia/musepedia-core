@@ -13,8 +13,8 @@ class Answer:
         self._tokenizer = tokenizer
         self._inputs = inputs
         self._pos_with_logit_pair = pos_with_logit
-        self._start_scores = outputs.start_logits[0].detach().numpy()
-        self._end_scores = outputs.end_logits[0].detach().numpy()
+        self._start_scores = outputs.start_logits[0].cpu().detach().numpy()
+        self._end_scores = outputs.end_logits[0].cpu().detach().numpy()
 
     def get_pos(self):
         """
@@ -44,7 +44,7 @@ class Answer:
         return mask[0].tolist()
 
     def _get_attention_mask(self):
-        return self._inputs['attention_mask'][0].detach().numpy()
+        return self._inputs['attention_mask'][0].cpu().detach().numpy()
 
     @staticmethod
     def _get_mask(raw_p_mask, raw_attention_mask):

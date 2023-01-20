@@ -6,6 +6,7 @@ import numpy as np
 
 from transformers import AutoModelForQuestionAnswering, AutoTokenizer
 
+from Config import USE_GPU
 from src.common.exception.ExceptionHandler import catch, check_length
 from src.common.log.ModelLogging import model_logging
 from src.common.log.QALogging import qa_logging
@@ -21,10 +22,10 @@ class QAReader:
 
     def __init__(self, model_path=MODEL_PATH):
         self._model_path = model_path
+        self._device = 'cuda:0' if torch.cuda.is_available() and USE_GPU else 'cpu'
         self._tokenizer, self._model = self.preload()
 
     @model_logging('RoBERTa模型')
-    @catch(Exception)
     def preload(self):
         """
         根据模型存储地址，加载tokenizer和模型
@@ -33,7 +34,7 @@ class QAReader:
         """
 
         tokenizer = AutoTokenizer.from_pretrained(self._model_path)
-        model = AutoModelForQuestionAnswering.from_pretrained(self._model_path)
+        model = AutoModelForQuestionAnswering.from_pretrained(self._model_path).to(self._device)
 
         return tokenizer, model
 
@@ -68,7 +69,7 @@ class QAReader:
         :return: 问题对应的答案，如果没有答案，那么返回[CLS]
         """
 
-        inputs = self._tokenizer(question, text, add_special_tokens=True, return_tensors='pt')
+        inputs = self._tokenizer(question, text, add_special_tokens=True, return_tensors='pt').to(self._device)
         outputs = self._model(**inputs)
 
         answer_start_logits = outputs.start_logits[0]

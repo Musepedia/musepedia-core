@@ -4,6 +4,7 @@ import rocketqa
 
 from transformers import DPRReaderTokenizer, DPRReader
 
+from Config import USE_GPU
 from src.common.exception.ExceptionHandler import catch
 from src.common.log.ModelLogging import model_logging
 
@@ -18,6 +19,8 @@ class DensePassageRetriever:
 
     def __init__(self, model_type='rocket', model_path=ROCKETQA_DPR_MODEL_PATH):
         self._model_type = model_type.lower()
+        self._use_cuda = torch.cuda.is_available() and USE_GPU
+        self._device = 'cuda:0' if self._use_cuda else 'cpu'
         if self._model_type == 'facebook':
             self._model_path = self.FACEBOOK_DPR_MODEL_PATH
         else:
@@ -25,7 +28,6 @@ class DensePassageRetriever:
         self._tokenizer, self._model = self.preload(self._model_type)
 
     @model_logging('DPR模型')
-    @catch(Exception)
     def preload(self, model_type: str):
         """
         根据模型存储地址，加载tokenizer和模型
@@ -39,9 +41,12 @@ class DensePassageRetriever:
 
         if model_type == 'facebook':
             tokenizer = DPRReaderTokenizer.from_pretrained(self._model_path)
-            model = DPRReader.from_pretrained(self._model_path)
+            model = DPRReader.from_pretrained(self._model_path).to(self._device)
         elif model_type == 'rocket':
-            model = rocketqa.load_model(self._model_path)
+            if self._use_cuda:
+                model = rocketqa.load_model(self._model_path, use_cuda=True, device_id=0)
+            else:
+                model = rocketqa.load_model(self._model_path)
         else:
             raise Exception('{0}为不支持的模型类型，仅支持[facebook|rocket]'.format(model_type))
 
@@ -66,7 +71,7 @@ class DensePassageRetriever:
                                texts=texts,
                                return_tensors='pt',
                                padding=True,
-                               truncation=True)
+                               truncation=True).to(self._device)
             outputs = self._model(**inputs)
             logits = outputs.relevance_logits
 
