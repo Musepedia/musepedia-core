@@ -2,19 +2,21 @@ import numpy as np
 
 
 class Answer:
-    def __init__(self, tokenizer, inputs, outputs, pos_with_logit):
+    def __init__(self, tokenizer, inputs, outputs, pos_with_logit, index=0):
         """
         :param tokenizer: tokenizer
         :param inputs: 经过tokenizer tokenize后的输入数据
         :param outputs: 经过模型计算得到的输出
         :param pos_with_logit: 包含答案起始位置与终止位置和logits的tuple
+        :param index: inputs和outputs如果是batch形式，则使用index表示该答案对应batch中的第几个回答
         """
 
         self._tokenizer = tokenizer
         self._inputs = inputs
         self._pos_with_logit_pair = pos_with_logit
-        self._start_scores = outputs.start_logits[0].cpu().detach().numpy()
-        self._end_scores = outputs.end_logits[0].cpu().detach().numpy()
+        self._index = index
+        self._start_scores = outputs.start_logits[self._index].cpu().detach().numpy()
+        self._end_scores = outputs.end_logits[self._index].cpu().detach().numpy()
 
     def get_pos(self):
         """
@@ -44,7 +46,7 @@ class Answer:
         return mask[0].tolist()
 
     def _get_attention_mask(self):
-        return self._inputs['attention_mask'][0].cpu().detach().numpy()
+        return self._inputs['attention_mask'][self._index].cpu().detach().numpy()
 
     @staticmethod
     def _get_mask(raw_p_mask, raw_attention_mask):
@@ -94,7 +96,7 @@ class Answer:
         """
 
         answer_start_pos, answer_end_pos = self.get_pos()
-        input_ids = self._inputs['input_ids'][0]
+        input_ids = self._inputs['input_ids'][self._index]
 
         answer = self._tokenizer.convert_tokens_to_string(self._tokenizer.convert_ids_to_tokens(input_ids[answer_start_pos:answer_end_pos]))
 

@@ -9,7 +9,7 @@ from transformers import AutoModelForQuestionAnswering, AutoTokenizer
 from Config import USE_GPU
 from src.common.exception.ExceptionHandler import catch, check_length
 from src.common.log.ModelLogging import model_logging
-from src.common.log.QALogging import qa_logging
+from src.common.log.QALogging import qa_logging, qa_logging_batch
 from src.qa.core.Answer import Answer
 
 
@@ -37,6 +37,34 @@ class QAReader:
         model = AutoModelForQuestionAnswering.from_pretrained(self._model_path).to(self._device)
 
         return tokenizer, model
+
+    @property
+    def model(self):
+        """
+        模型的getter方法
+
+        :return: 返回QAReader的模型
+        """
+
+        return self._model
+
+    @model.setter
+    def model(self, checkpoint):
+        pass
+
+    def set_train_mode(self):
+        """
+        切换模型至训练模式
+        """
+
+        self._model.train()
+
+    def set_evaluation_mode(self):
+        """
+        切换模型至推演模式
+        """
+
+        self._model.eval()
 
     @staticmethod
     @catch(Exception)
@@ -81,6 +109,41 @@ class QAReader:
         return answer, text_id
 
     @catch(Exception)
+    @check_length(512)
+    @qa_logging_batch(question_list_index=1, text_list_index=2)
+    def get_possible_answer_batch(self, question, text, text_id, answer=None):
+        """
+        处理n个问题对应n篇文本的情况，问题数量和文本数量一致，视作一组batch
+        该方法可以提高显存和CUDA的利用率，仅用于src.qa.train（训练）和src.qa.evaluation（评测），不用于推理
+
+        :param question: 问题batch
+        :param text: 待抽取的文本batch
+        :param text_id: 待抽取的文本id batch
+        :param answer: 训练样本中的正确回答batch，包含回答的起始位置和终止位置，需要为tuple类型，第一个元素为起始位置，第二个元素为终止位置
+        :return: 问题对应的答案列表，如果没有答案，那么返回[CLS]，结果长度为n，与传入的问题和文本数量相同
+        """
+
+        answer_list = []
+        inputs = self._tokenizer(question, text, add_special_tokens=True, return_tensors='pt', padding=True).to(self._device)
+        if answer is not None and self._model.training:
+            # 仅在训练模式下使用，训练模式下需要向模型中传入正确回答的起始和终止位置来计算loss
+            inputs['start_positions'] = torch.LongTensor(answer[0]).to(self._device)
+            inputs['end_positions'] = torch.LongTensor(answer[1]).to(self._device)
+            outputs = self._model(**inputs)
+        else:
+            outputs = self._model(**inputs)
+
+        for i in range(len(text)):
+            answer_start_logits = outputs.start_logits[i]
+            answer_end_logits = outputs.end_logits[i]
+
+            answer_param_pair = self.get_pos_with_logit(answer_start_logits, answer_end_logits)
+            answer = Answer(self._tokenizer, inputs, outputs, answer_param_pair, i)
+            answer_list.append(answer)
+
+        return answer_list, text_id, outputs.loss
+
+    @catch(Exception)
     def wrap_get_possible_answer(self, args):
         """
         封装get_possible_answer()，适用于map()调用
@@ -97,8 +160,6 @@ class QAReader:
         """
         处理1个问题对应多篇文本，将从若干文本中分别抽取答案，同时为每份答案赋予分数（实际是概率），取最高者作为答案
 
-        :param tokenizer: 用于将字符与token映射
-        :param model: 模型
         :param question: 问题
         :param texts: 待抽取的文本集合（必须是可迭代对象）
         :return: 问题对应的答案和对应抽取的文本，如果没有答案，那么返回[CLS]
@@ -119,6 +180,62 @@ class QAReader:
                 text_id_for_best_answer = text_id
 
         return best_answer, text_id_for_best_answer
+
+    @catch(Exception)
+    def get_answer_batch(self, question, texts, batch_size, answer=None):
+        """
+        处理n个问题对应多篇文本，将从若干文本中分别抽取答案，同时为每份答案赋予分数（实际是概率），取最高者作为答案，
+        问题数量和文本数量可以不一致（允许文本数量 > 问题数量的情况），视作一组batch
+        该方法可以提高显存和CUDA的利用率，仅用于src.qa.train（训练）和src.qa.evaluation（评测），不用于推理
+
+        :param question: 问题batch
+        :param texts: 待抽取的文本集合batch
+        :param batch_size: batch大小
+        :param answer: 训练样本中的正确回答batch，包含回答的起始位置和终止位置，需要为tuple类型，第一个元素为起始位置，第二个元素为终止位置
+        :return: 问题对应的答案列表，如果没有答案，那么返回[CLS]，结果长度同batch_size
+        """
+
+        best_answer_list = []
+        text_id_for_best_answer_list = []
+
+        batch_question = []
+        batch_text = []
+        batch_id = []
+        if answer is not None:
+            batch_answer = [[], []]
+        else:
+            batch_answer = []
+        for i in range(batch_size):
+            for j in range(len(texts[i])):
+                batch_question.append(question[i])
+                batch_text.append(texts[i][j].text)
+                batch_id.append(texts[i][j].id)
+                if answer is not None:
+                    batch_answer[0].append(answer[0][i])
+                    batch_answer[1].append(answer[1][i])
+
+        possible_answer_list, text_id_list, loss = self.get_possible_answer_batch(batch_question, batch_text, batch_id, tuple(batch_answer))
+        for i in range(batch_size):
+            max_score = 0
+            best_answer = ""
+            text_id_for_best_answer = 0
+
+            for j in range(len(texts[i])):
+                answer_index = i + j
+                possible_answer, text_id = possible_answer_list[answer_index], text_id_list[answer_index]
+
+                if possible_answer is None:
+                    continue
+                score = possible_answer.get_score()
+                if score > max_score:
+                    max_score = score
+                    best_answer = possible_answer.to_string()
+                    text_id_for_best_answer = text_id
+
+            best_answer_list.append(best_answer)
+            text_id_for_best_answer_list.append(text_id_for_best_answer)
+
+        return best_answer_list, text_id_for_best_answer_list, loss
 
     @catch(Exception)
     def get_answer_parallel(self, question, texts, pool_num=4):

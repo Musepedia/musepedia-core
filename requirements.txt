@@ -1,5 +1,6 @@
 transformers==4.10.3
-datasets==1.14.0
+datasets==2.8.0
+evaluate==0.4.0
 grpcio==1.41.0
 grpcio-tools==1.41.0
 psutil==5.8.0
