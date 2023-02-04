@@ -23,3 +23,8 @@ ROCKETQA_MODEL_PATH = 'src/qa/models/zh_dureader_de/config.json'
 
 # 是否使用GPU (CUDA)运行深度学习模型，False表示使用CPU，True表示在有GPU可用的情况下使用
 USE_GPU = True
+
+# es端口
+ELASTIC_SEARCH_HOST = "http://pt.musepedia.cn:9200"
+ELASTIC_SEARCH_USERNAME = "elastic"
+ELASTIC_SEARCH_PASSWORD = "r2tiq2FqAd5"
