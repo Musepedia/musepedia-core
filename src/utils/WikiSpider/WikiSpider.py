@@ -3,8 +3,11 @@
 import requests
 from bs4 import BeautifulSoup
 from elasticsearch import Elasticsearch
-
 from langconv import *
+from loguru import logger
+from Config import ELASTIC_SEARCH_HOST
+from Config import ELASTIC_SEARCH_PASSWORD
+from Config import ELASTIC_SEARCH_USERNAME
 
 
 def hk2s(context: str) -> str:
@@ -113,7 +116,7 @@ class WikiSpider:
     Wikipedia爬虫，从Wikipedia上爬取关键词对应的文章内容
     """
 
-    def __init__(self, host="http://pt.musepedia.cn:9200", username="elastic", password="r2tiq2FqAd5"):
+    def __init__(self, host=ELASTIC_SEARCH_HOST,username=ELASTIC_SEARCH_USERNAME, password=ELASTIC_SEARCH_PASSWORD):
         self.index_name = "paragraphs"
         self.es = Elasticsearch(
             hosts=host,
@@ -169,11 +172,11 @@ class WikiSpider:
         if not self.es.indices.exists(index=self.index_name):
             result = self.es.indices.create(index=self.index_name, mappings=_index_map)
             if result.get("acknowledged"):
-                print("索引创建成功")
+                logger.info("索引创建成功")
             else:
-                print(f"索引创建失败:{result}")
+                logger.info(f"索引创建失败:{result}")
         else:
-            print("索引已存在无需重复创建!")
+            logger.info("索引已存在无需重复创建!")
 
     def createDocument(self, name: str, title: str, content: str, source='wiki'):
         """
@@ -189,7 +192,7 @@ class WikiSpider:
         try:
             self.es.create(index=self.index_name, id=name + '_' + title, document=doc)
         except:
-            print("document exists.")
+            logger.warn("文档已存在！")
 
     def call_spider(self, keys: list[str]):
         """
@@ -197,9 +200,8 @@ class WikiSpider:
 
         :param keys: 关键词的列表
         """
-        # print(keys)
         for key in keys:
-            print(key)
+            logger.info(key)
             responses = requests.get(
                 "https://zh.wikipedia.org/wiki/" + key,
                 headers=self.header,
