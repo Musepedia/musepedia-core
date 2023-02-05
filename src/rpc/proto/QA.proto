@@ -5,6 +5,9 @@ service MyService {
     // Sends a greeting
     rpc SayHello (HelloRequest) returns (HelloReply) {
     }
+
+    rpc GetOpenDocument(OpenDocumentRequest) returns (ExhibitLabelAliasReply) {
+    }
 }
 
 message RpcExhibitText {
@@ -20,6 +23,11 @@ message HelloRequest {
     int32 status = 3;
 }
 
+message OpenDocumentRequest {
+    string label = 1;
+    repeated RpcExhibitText texts = 2;
+}
+
 // define type
 message AnswerWithTextId {
     string answer = 1;
@@ -29,4 +37,8 @@ message AnswerWithTextId {
 // The response message containing the best answer extracted from the texts with the text
 message HelloReply {
     AnswerWithTextId answerWithTextId = 1;
+}
+
+message ExhibitLabelAliasReply {
+    repeated string aliases = 1;
 }

@@ -7,10 +7,11 @@ from src.common.exception.ExceptionHandler import catch
 from src.common.log.ServiceLogging import service_logging
 from concurrent import futures
 from Config import GRPC_PORT, ROBERTA_MODEL_PATH
+from src.qa.core.OpenQARetriever import OpenQARetriever
 from src.rpc.proto import QA_pb2_grpc, QA_pb2
 from src.qa.core.QuestionAnswering import QAReader
 from src.qa.utils.MapUtil import MapUtil
-
+from src.utils.NLPUtil import NLPUtil
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
@@ -19,16 +20,26 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
     def __init__(self):
         self._qa_reader = QAReader(model_path=ROBERTA_MODEL_PATH)
         self._map_util = MapUtil()
+        self._open_qa_retriever = OpenQARetriever()
+        self._nlp_util = NLPUtil()
 
     def SayHello(self, request: QA_pb2.HelloRequest, context):
         answer_with_text_id = QA_pb2.AnswerWithTextId()
         answer, text_id = self._qa_reader.get_answer(request.question, request.texts)
         if request.status == 2:
             answer = self._map_util.render_map(answer)
+        if answer == '[CLS]':
+            open_documents = self._open_qa_retriever.get_top_k_text(request.question, 15)
+            answer = self._qa_reader.get_answer(request.question, open_documents)  # todo 需要open document的id
         answer_with_text_id.answer = answer
         answer_with_text_id.textId = text_id
 
         return QA_pb2.HelloReply(answerWithTextId=answer_with_text_id)
+
+    def GetOpenDocument(self, request: QA_pb2.OpenDocumentRequest, context):
+        aliases = self._nlp_util.get_exhibit_alias(request.texts)
+
+        return QA_pb2.ExhibitLabelAliasReply(aliases=aliases)
 
 
 @service_logging

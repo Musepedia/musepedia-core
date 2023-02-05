@@ -20,6 +20,11 @@ class MyServiceStub(object):
                 request_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.HelloRequest.SerializeToString,
                 response_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.HelloReply.FromString,
                 )
+        self.GetOpenDocument = channel.unary_unary(
+                '/MyService/GetOpenDocument',
+                request_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.OpenDocumentRequest.SerializeToString,
+                response_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.ExhibitLabelAliasReply.FromString,
+                )
 
 
 class MyServiceServicer(object):
@@ -33,6 +38,12 @@ class MyServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetOpenDocument(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MyServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -40,6 +51,11 @@ def add_MyServiceServicer_to_server(servicer, server):
                     servicer.SayHello,
                     request_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.HelloRequest.FromString,
                     response_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.HelloReply.SerializeToString,
+            ),
+            'GetOpenDocument': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetOpenDocument,
+                    request_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.OpenDocumentRequest.FromString,
+                    response_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.ExhibitLabelAliasReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -66,5 +82,22 @@ class MyService(object):
         return grpc.experimental.unary_unary(request, target, '/MyService/SayHello',
             src_dot_rpc_dot_proto_dot_QA__pb2.HelloRequest.SerializeToString,
             src_dot_rpc_dot_proto_dot_QA__pb2.HelloReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetOpenDocument(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/MyService/GetOpenDocument',
+            src_dot_rpc_dot_proto_dot_QA__pb2.OpenDocumentRequest.SerializeToString,
+            src_dot_rpc_dot_proto_dot_QA__pb2.ExhibitLabelAliasReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16src/rpc/proto/QA.proto\"*\n\x0eRpcExhibitText\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04text\x18\x02 \x01(\t\"P\n\x0cHelloRequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\x12\x0e\n\x06status\x18\x03 \x01(\x05\"2\n\x10\x41nswerWithTextId\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0e\n\x06textId\x18\x02 \x01(\x03\"9\n\nHelloReply\x12+\n\x10\x61nswerWithTextId\x18\x01 \x01(\x0b\x32\x11.AnswerWithTextId25\n\tMyService\x12(\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x16src/rpc/proto/QA.proto\"*\n\x0eRpcExhibitText\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04text\x18\x02 \x01(\t\"P\n\x0cHelloRequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\x12\x0e\n\x06status\x18\x03 \x01(\x05\"D\n\x13OpenDocumentRequest\x12\r\n\x05label\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\"2\n\x10\x41nswerWithTextId\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0e\n\x06textId\x18\x02 \x01(\x03\"9\n\nHelloReply\x12+\n\x10\x61nswerWithTextId\x18\x01 \x01(\x0b\x32\x11.AnswerWithTextId\")\n\x16\x45xhibitLabelAliasReply\x12\x0f\n\x07\x61liases\x18\x01 \x03(\t2y\n\tMyService\x12(\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\"\x00\x12\x42\n\x0fGetOpenDocument\x12\x14.OpenDocumentRequest\x1a\x17.ExhibitLabelAliasReply\"\x00\x62\x06proto3'
 )
 
 
@@ -110,6 +110,45 @@ _HELLOREQUEST = _descriptor.Descriptor(
 )
 
 
+_OPENDOCUMENTREQUEST = _descriptor.Descriptor(
+  name='OpenDocumentRequest',
+  full_name='OpenDocumentRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='label', full_name='OpenDocumentRequest.label', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='texts', full_name='OpenDocumentRequest.texts', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=152,
+  serialized_end=220,
+)
+
+
 _ANSWERWITHTEXTID = _descriptor.Descriptor(
   name='AnswerWithTextId',
   full_name='AnswerWithTextId',
@@ -144,8 +183,8 @@ _ANSWERWITHTEXTID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=152,
-  serialized_end=202,
+  serialized_start=222,
+  serialized_end=272,
 )
 
 
@@ -176,16 +215,51 @@ _HELLOREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=204,
-  serialized_end=261,
+  serialized_start=274,
+  serialized_end=331,
+)
+
+
+_EXHIBITLABELALIASREPLY = _descriptor.Descriptor(
+  name='ExhibitLabelAliasReply',
+  full_name='ExhibitLabelAliasReply',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='aliases', full_name='ExhibitLabelAliasReply.aliases', index=0,
+      number=1, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=333,
+  serialized_end=374,
 )
 
 _HELLOREQUEST.fields_by_name['texts'].message_type = _RPCEXHIBITTEXT
+_OPENDOCUMENTREQUEST.fields_by_name['texts'].message_type = _RPCEXHIBITTEXT
 _HELLOREPLY.fields_by_name['answerWithTextId'].message_type = _ANSWERWITHTEXTID
 DESCRIPTOR.message_types_by_name['RpcExhibitText'] = _RPCEXHIBITTEXT
 DESCRIPTOR.message_types_by_name['HelloRequest'] = _HELLOREQUEST
+DESCRIPTOR.message_types_by_name['OpenDocumentRequest'] = _OPENDOCUMENTREQUEST
 DESCRIPTOR.message_types_by_name['AnswerWithTextId'] = _ANSWERWITHTEXTID
 DESCRIPTOR.message_types_by_name['HelloReply'] = _HELLOREPLY
+DESCRIPTOR.message_types_by_name['ExhibitLabelAliasReply'] = _EXHIBITLABELALIASREPLY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 RpcExhibitText = _reflection.GeneratedProtocolMessageType('RpcExhibitText', (_message.Message,), {
@@ -202,6 +276,13 @@ HelloRequest = _reflection.GeneratedProtocolMessageType('HelloRequest', (_messag
   })
 _sym_db.RegisterMessage(HelloRequest)
 
+OpenDocumentRequest = _reflection.GeneratedProtocolMessageType('OpenDocumentRequest', (_message.Message,), {
+  'DESCRIPTOR' : _OPENDOCUMENTREQUEST,
+  '__module__' : 'src.rpc.proto.QA_pb2'
+  # @@protoc_insertion_point(class_scope:OpenDocumentRequest)
+  })
+_sym_db.RegisterMessage(OpenDocumentRequest)
+
 AnswerWithTextId = _reflection.GeneratedProtocolMessageType('AnswerWithTextId', (_message.Message,), {
   'DESCRIPTOR' : _ANSWERWITHTEXTID,
   '__module__' : 'src.rpc.proto.QA_pb2'
@@ -216,6 +297,13 @@ HelloReply = _reflection.GeneratedProtocolMessageType('HelloReply', (_message.Me
   })
 _sym_db.RegisterMessage(HelloReply)
 
+ExhibitLabelAliasReply = _reflection.GeneratedProtocolMessageType('ExhibitLabelAliasReply', (_message.Message,), {
+  'DESCRIPTOR' : _EXHIBITLABELALIASREPLY,
+  '__module__' : 'src.rpc.proto.QA_pb2'
+  # @@protoc_insertion_point(class_scope:ExhibitLabelAliasReply)
+  })
+_sym_db.RegisterMessage(ExhibitLabelAliasReply)
+
 
 
 _MYSERVICE = _descriptor.ServiceDescriptor(
@@ -225,8 +313,8 @@ _MYSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=263,
-  serialized_end=316,
+  serialized_start=376,
+  serialized_end=497,
   methods=[
   _descriptor.MethodDescriptor(
     name='SayHello',
@@ -235,6 +323,16 @@ _MYSERVICE = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_HELLOREQUEST,
     output_type=_HELLOREPLY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetOpenDocument',
+    full_name='MyService.GetOpenDocument',
+    index=1,
+    containing_service=None,
+    input_type=_OPENDOCUMENTREQUEST,
+    output_type=_EXHIBITLABELALIASREPLY,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

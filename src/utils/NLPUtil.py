@@ -30,9 +30,23 @@ class NLPUtil:
 
         return keyword
 
+    @classmethod
+    def get_exhibit_alias(cls, texts: [str]) -> [str]:
+        keyword = set()
+        for text in texts:
+            keyword = keyword.union(set(jieba.analyse.extract_tags(text, topK=len(text) // 6)))
+
+        keyword = list(keyword)
+        pattern = re.compile(cls.PUNCTUATION_DIGIT_PATTERN)
+        keyword = [word for word in keyword if pattern.fullmatch(word)]
+
+        return keyword
+
 
 if __name__ == '__main__':
     test_text = '银杏，落叶乔木，寿命可达3000年以上。又名公孙树、鸭掌树、鸭脚树、鸭脚子等，其裸露的种子称为白果，叶称蒲扇。属裸子植物银杏门惟一现存物种，和它同门的所有其他物种都已灭绝，因此被称为植物界的“活化石”。已发现的化石可以追溯到2.7亿年前。银杏原产于中国，现广泛种植于全世界，并被早期引入人类历史。它有多种用途，可作为传统医学用途和食物。'
 
     keywords = NLPUtil.get_keyword(test_text)
+    aliases = NLPUtil.get_exhibit_alias([test_text])
     print(keywords, len(keywords))
+    print(aliases, len(keywords))
