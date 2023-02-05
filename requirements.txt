@@ -11,3 +11,6 @@ pyecharts==1.7.1
 snapshot_phantomjs==0.0.3
 paddlepaddle==2.4.0
 rocketqa==1.1.0
+elasticsearch==8.4.3
+requests==2.27
+urllib3==1.25.8
