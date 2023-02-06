@@ -23,7 +23,7 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         self._open_qa_retriever = OpenQARetriever()
         self._nlp_util = NLPUtil()
 
-    def SayHello(self, request: QA_pb2.HelloRequest, context):
+    def GetAnswer(self, request: QA_pb2.QARequest, context):
         answer_with_text_id = QA_pb2.AnswerWithTextId()
         answer, text_id = self._qa_reader.get_answer(request.question, request.texts)
         if request.status == 2:
@@ -35,12 +35,15 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         answer_with_text_id.answer = answer
         answer_with_text_id.textId = text_id
 
-        return QA_pb2.HelloReply(answerWithTextId=answer_with_text_id)
+        return QA_pb2.QAReply(answerWithTextId=answer_with_text_id)
 
     def GetOpenDocument(self, request: QA_pb2.OpenDocumentRequest, context):
-        aliases = self._nlp_util.get_exhibit_alias(request.texts)
+        pass
 
-        return QA_pb2.ExhibitLabelAliasReply(aliases=aliases)
+    def GetExhibitAlias(self, request: QA_pb2.ExhibitLabelAliasRequest, context):
+        alias_list = self._nlp_util.get_exhibit_alias(request.texts)
+
+        return QA_pb2.ExhibitLabelAliasReply(aliases=alias_list)
 
 
 @service_logging

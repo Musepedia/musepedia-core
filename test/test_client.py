@@ -5,6 +5,15 @@ import pytest
 from Config import GRPC_PORT
 from src.qa.core.DensePassageRetriever import DensePassageRetriever
 from src.rpc.proto import QA_pb2, QA_pb2_grpc
+from src.utils.NLPUtil import NLPUtil
+
+
+@pytest.fixture
+def stub():
+    channel = grpc.insecure_channel('localhost:{0}'.format(GRPC_PORT))
+    stub = QA_pb2_grpc.MyServiceStub(channel)
+
+    return stub
 
 
 @pytest.mark.parametrize('execution_number', range(1))
@@ -16,10 +25,10 @@ def test_client_connection(execution_number):
     test_text.id = 1
     test_text.text = '银杏（学名：Ginkgo biloba），落叶乔木，寿命可达3000年以上。'
 
-    request = QA_pb2.HelloRequest(question='银杏的寿命有多长',
+    request = QA_pb2.QARequest(question='银杏的寿命有多长',
                                   texts=[test_text],
                                   status=1)
-    response = stub.SayHello(request)
+    response = stub.GetAnswer(request)
     assert response.answerWithTextId.answer == '3000年', '抽取错误，答案为{0}'.format(response.answerWithTextId.answer)
 
 
@@ -34,3 +43,19 @@ def test_dpr_with_gpu():
     dense_passage_retriever = DensePassageRetriever(model_type='rocket',
                                                     model_path='src/qa/models/zh_dureader_de/config.json')
     print(dense_passage_retriever.get_top_k_text(question_chinese, texts_chinese, titles_chinese, 2))
+
+
+def test_get_open_document(stub):
+    pass
+
+
+def test_get_exhibit_label_alias(stub):
+    texts = ['银杏（学名：Ginkgo biloba），落叶乔木，寿命可达3000年以上。又名公孙树、鸭掌树、鸭脚树、鸭脚子等[4]，其裸露的种子称为白果，叶称蒲扇[5]。属裸子植物银杏门惟一现存物种，和它同门的其他所有物种都已灭绝，因此被称为植物界的“活化石”。已发现的化石可以追溯到2.7亿年前。银杏原产于中国，现广泛种植于全世界，常作为道路景观树种，并被早期引入人类历史。它有多种用途，可作为传统医学用途和食材。']
+
+    request = QA_pb2.ExhibitLabelAliasRequest(texts=texts)
+    response = stub.GetExhibitAlias(request)
+
+    aliases = NLPUtil.get_exhibit_alias(texts)
+
+    for alias in aliases:
+        assert alias in response.aliases

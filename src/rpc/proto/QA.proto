@@ -1,13 +1,15 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 // The greeting service definition.
 service MyService {
     // Sends a greeting
-    rpc SayHello (HelloRequest) returns (HelloReply) {
-    }
+    rpc GetAnswer (QARequest) returns (QAReply) {}
 
-    rpc GetOpenDocument(OpenDocumentRequest) returns (ExhibitLabelAliasReply) {
-    }
+    rpc GetOpenDocument(OpenDocumentRequest) returns (google.protobuf.Empty) {}
+
+    rpc GetExhibitAlias(ExhibitLabelAliasRequest) returns (ExhibitLabelAliasReply) {}
 }
 
 message RpcExhibitText {
@@ -17,7 +19,7 @@ message RpcExhibitText {
 
 // The request message containing the question, the texts and the status.
 // status = 2 requires pyecharts
-message HelloRequest {
+message QARequest {
     string question = 1;
     repeated RpcExhibitText texts = 2;
     int32 status = 3;
@@ -28,15 +30,19 @@ message OpenDocumentRequest {
     repeated RpcExhibitText texts = 2;
 }
 
+message ExhibitLabelAliasRequest {
+    repeated string texts = 1;
+}
+
 // define type
 message AnswerWithTextId {
     string answer = 1;
-    int64 textId = 2;
+    int64 text_id = 2;
 }
 
 // The response message containing the best answer extracted from the texts with the text
-message HelloReply {
-    AnswerWithTextId answerWithTextId = 1;
+message QAReply {
+    AnswerWithTextId answer_with_text_id = 1;
 }
 
 message ExhibitLabelAliasReply {

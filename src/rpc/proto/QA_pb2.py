@@ -11,6 +11,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -19,8 +20,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16src/rpc/proto/QA.proto\"*\n\x0eRpcExhibitText\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04text\x18\x02 \x01(\t\"P\n\x0cHelloRequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\x12\x0e\n\x06status\x18\x03 \x01(\x05\"D\n\x13OpenDocumentRequest\x12\r\n\x05label\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\"2\n\x10\x41nswerWithTextId\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0e\n\x06textId\x18\x02 \x01(\x03\"9\n\nHelloReply\x12+\n\x10\x61nswerWithTextId\x18\x01 \x01(\x0b\x32\x11.AnswerWithTextId\")\n\x16\x45xhibitLabelAliasReply\x12\x0f\n\x07\x61liases\x18\x01 \x03(\t2y\n\tMyService\x12(\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\"\x00\x12\x42\n\x0fGetOpenDocument\x12\x14.OpenDocumentRequest\x1a\x17.ExhibitLabelAliasReply\"\x00\x62\x06proto3'
-)
+  serialized_pb=b'\n\x16src/rpc/proto/QA.proto\x1a\x1bgoogle/protobuf/empty.proto\"*\n\x0eRpcExhibitText\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04text\x18\x02 \x01(\t\"M\n\tQARequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\x12\x0e\n\x06status\x18\x03 \x01(\x05\"D\n\x13OpenDocumentRequest\x12\r\n\x05label\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\")\n\x18\x45xhibitLabelAliasRequest\x12\r\n\x05texts\x18\x01 \x03(\t\"3\n\x10\x41nswerWithTextId\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0f\n\x07text_id\x18\x02 \x01(\x03\"9\n\x07QAReply\x12.\n\x13\x61nswer_with_text_id\x18\x01 \x01(\x0b\x32\x11.AnswerWithTextId\")\n\x16\x45xhibitLabelAliasReply\x12\x0f\n\x07\x61liases\x18\x01 \x03(\t2\xbc\x01\n\tMyService\x12#\n\tGetAnswer\x12\n.QARequest\x1a\x08.QAReply\"\x00\x12\x41\n\x0fGetOpenDocument\x12\x14.OpenDocumentRequest\x1a\x16.google.protobuf.Empty\"\x00\x12G\n\x0fGetExhibitAlias\x12\x19.ExhibitLabelAliasRequest\x1a\x17.ExhibitLabelAliasReply\"\x00\x62\x06proto3'
+  ,
+  dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR,])
 
 
 
@@ -59,35 +61,35 @@ _RPCEXHIBITTEXT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=26,
-  serialized_end=68,
+  serialized_start=55,
+  serialized_end=97,
 )
 
 
-_HELLOREQUEST = _descriptor.Descriptor(
-  name='HelloRequest',
-  full_name='HelloRequest',
+_QAREQUEST = _descriptor.Descriptor(
+  name='QARequest',
+  full_name='QARequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='question', full_name='HelloRequest.question', index=0,
+      name='question', full_name='QARequest.question', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='texts', full_name='HelloRequest.texts', index=1,
+      name='texts', full_name='QARequest.texts', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='status', full_name='HelloRequest.status', index=2,
+      name='status', full_name='QARequest.status', index=2,
       number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -105,8 +107,8 @@ _HELLOREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=70,
-  serialized_end=150,
+  serialized_start=99,
+  serialized_end=176,
 )
 
 
@@ -144,8 +146,40 @@ _OPENDOCUMENTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=152,
-  serialized_end=220,
+  serialized_start=178,
+  serialized_end=246,
+)
+
+
+_EXHIBITLABELALIASREQUEST = _descriptor.Descriptor(
+  name='ExhibitLabelAliasRequest',
+  full_name='ExhibitLabelAliasRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='texts', full_name='ExhibitLabelAliasRequest.texts', index=0,
+      number=1, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=248,
+  serialized_end=289,
 )
 
 
@@ -165,7 +199,7 @@ _ANSWERWITHTEXTID = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='textId', full_name='AnswerWithTextId.textId', index=1,
+      name='text_id', full_name='AnswerWithTextId.text_id', index=1,
       number=2, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -183,21 +217,21 @@ _ANSWERWITHTEXTID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=222,
-  serialized_end=272,
+  serialized_start=291,
+  serialized_end=342,
 )
 
 
-_HELLOREPLY = _descriptor.Descriptor(
-  name='HelloReply',
-  full_name='HelloReply',
+_QAREPLY = _descriptor.Descriptor(
+  name='QAReply',
+  full_name='QAReply',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='answerWithTextId', full_name='HelloReply.answerWithTextId', index=0,
+      name='answer_with_text_id', full_name='QAReply.answer_with_text_id', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -215,8 +249,8 @@ _HELLOREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=274,
-  serialized_end=331,
+  serialized_start=344,
+  serialized_end=401,
 )
 
 
@@ -247,18 +281,19 @@ _EXHIBITLABELALIASREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=333,
-  serialized_end=374,
+  serialized_start=403,
+  serialized_end=444,
 )
 
-_HELLOREQUEST.fields_by_name['texts'].message_type = _RPCEXHIBITTEXT
+_QAREQUEST.fields_by_name['texts'].message_type = _RPCEXHIBITTEXT
 _OPENDOCUMENTREQUEST.fields_by_name['texts'].message_type = _RPCEXHIBITTEXT
-_HELLOREPLY.fields_by_name['answerWithTextId'].message_type = _ANSWERWITHTEXTID
+_QAREPLY.fields_by_name['answer_with_text_id'].message_type = _ANSWERWITHTEXTID
 DESCRIPTOR.message_types_by_name['RpcExhibitText'] = _RPCEXHIBITTEXT
-DESCRIPTOR.message_types_by_name['HelloRequest'] = _HELLOREQUEST
+DESCRIPTOR.message_types_by_name['QARequest'] = _QAREQUEST
 DESCRIPTOR.message_types_by_name['OpenDocumentRequest'] = _OPENDOCUMENTREQUEST
+DESCRIPTOR.message_types_by_name['ExhibitLabelAliasRequest'] = _EXHIBITLABELALIASREQUEST
 DESCRIPTOR.message_types_by_name['AnswerWithTextId'] = _ANSWERWITHTEXTID
-DESCRIPTOR.message_types_by_name['HelloReply'] = _HELLOREPLY
+DESCRIPTOR.message_types_by_name['QAReply'] = _QAREPLY
 DESCRIPTOR.message_types_by_name['ExhibitLabelAliasReply'] = _EXHIBITLABELALIASREPLY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -269,12 +304,12 @@ RpcExhibitText = _reflection.GeneratedProtocolMessageType('RpcExhibitText', (_me
   })
 _sym_db.RegisterMessage(RpcExhibitText)
 
-HelloRequest = _reflection.GeneratedProtocolMessageType('HelloRequest', (_message.Message,), {
-  'DESCRIPTOR' : _HELLOREQUEST,
+QARequest = _reflection.GeneratedProtocolMessageType('QARequest', (_message.Message,), {
+  'DESCRIPTOR' : _QAREQUEST,
   '__module__' : 'src.rpc.proto.QA_pb2'
-  # @@protoc_insertion_point(class_scope:HelloRequest)
+  # @@protoc_insertion_point(class_scope:QARequest)
   })
-_sym_db.RegisterMessage(HelloRequest)
+_sym_db.RegisterMessage(QARequest)
 
 OpenDocumentRequest = _reflection.GeneratedProtocolMessageType('OpenDocumentRequest', (_message.Message,), {
   'DESCRIPTOR' : _OPENDOCUMENTREQUEST,
@@ -283,6 +318,13 @@ OpenDocumentRequest = _reflection.GeneratedProtocolMessageType('OpenDocumentRequ
   })
 _sym_db.RegisterMessage(OpenDocumentRequest)
 
+ExhibitLabelAliasRequest = _reflection.GeneratedProtocolMessageType('ExhibitLabelAliasRequest', (_message.Message,), {
+  'DESCRIPTOR' : _EXHIBITLABELALIASREQUEST,
+  '__module__' : 'src.rpc.proto.QA_pb2'
+  # @@protoc_insertion_point(class_scope:ExhibitLabelAliasRequest)
+  })
+_sym_db.RegisterMessage(ExhibitLabelAliasRequest)
+
 AnswerWithTextId = _reflection.GeneratedProtocolMessageType('AnswerWithTextId', (_message.Message,), {
   'DESCRIPTOR' : _ANSWERWITHTEXTID,
   '__module__' : 'src.rpc.proto.QA_pb2'
@@ -290,12 +332,12 @@ AnswerWithTextId = _reflection.GeneratedProtocolMessageType('AnswerWithTextId', 
   })
 _sym_db.RegisterMessage(AnswerWithTextId)
 
-HelloReply = _reflection.GeneratedProtocolMessageType('HelloReply', (_message.Message,), {
-  'DESCRIPTOR' : _HELLOREPLY,
+QAReply = _reflection.GeneratedProtocolMessageType('QAReply', (_message.Message,), {
+  'DESCRIPTOR' : _QAREPLY,
   '__module__' : 'src.rpc.proto.QA_pb2'
-  # @@protoc_insertion_point(class_scope:HelloReply)
+  # @@protoc_insertion_point(class_scope:QAReply)
   })
-_sym_db.RegisterMessage(HelloReply)
+_sym_db.RegisterMessage(QAReply)
 
 ExhibitLabelAliasReply = _reflection.GeneratedProtocolMessageType('ExhibitLabelAliasReply', (_message.Message,), {
   'DESCRIPTOR' : _EXHIBITLABELALIASREPLY,
@@ -313,16 +355,16 @@ _MYSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=376,
-  serialized_end=497,
+  serialized_start=447,
+  serialized_end=635,
   methods=[
   _descriptor.MethodDescriptor(
-    name='SayHello',
-    full_name='MyService.SayHello',
+    name='GetAnswer',
+    full_name='MyService.GetAnswer',
     index=0,
     containing_service=None,
-    input_type=_HELLOREQUEST,
-    output_type=_HELLOREPLY,
+    input_type=_QAREQUEST,
+    output_type=_QAREPLY,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -332,6 +374,16 @@ _MYSERVICE = _descriptor.ServiceDescriptor(
     index=1,
     containing_service=None,
     input_type=_OPENDOCUMENTREQUEST,
+    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='GetExhibitAlias',
+    full_name='MyService.GetExhibitAlias',
+    index=2,
+    containing_service=None,
+    input_type=_EXHIBITLABELALIASREQUEST,
     output_type=_EXHIBITLABELALIASREPLY,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,

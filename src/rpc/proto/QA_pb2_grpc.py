@@ -2,6 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 from src.rpc.proto import QA_pb2 as src_dot_rpc_dot_proto_dot_QA__pb2
 
 
@@ -15,14 +16,19 @@ class MyServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SayHello = channel.unary_unary(
-                '/MyService/SayHello',
-                request_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.HelloRequest.SerializeToString,
-                response_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.HelloReply.FromString,
+        self.GetAnswer = channel.unary_unary(
+                '/MyService/GetAnswer',
+                request_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.QARequest.SerializeToString,
+                response_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.QAReply.FromString,
                 )
         self.GetOpenDocument = channel.unary_unary(
                 '/MyService/GetOpenDocument',
                 request_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.OpenDocumentRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
+        self.GetExhibitAlias = channel.unary_unary(
+                '/MyService/GetExhibitAlias',
+                request_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.ExhibitLabelAliasRequest.SerializeToString,
                 response_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.ExhibitLabelAliasReply.FromString,
                 )
 
@@ -31,7 +37,7 @@ class MyServiceServicer(object):
     """The greeting service definition.
     """
 
-    def SayHello(self, request, context):
+    def GetAnswer(self, request, context):
         """Sends a greeting
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -44,17 +50,28 @@ class MyServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetExhibitAlias(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MyServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SayHello': grpc.unary_unary_rpc_method_handler(
-                    servicer.SayHello,
-                    request_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.HelloRequest.FromString,
-                    response_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.HelloReply.SerializeToString,
+            'GetAnswer': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAnswer,
+                    request_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.QARequest.FromString,
+                    response_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.QAReply.SerializeToString,
             ),
             'GetOpenDocument': grpc.unary_unary_rpc_method_handler(
                     servicer.GetOpenDocument,
                     request_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.OpenDocumentRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'GetExhibitAlias': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetExhibitAlias,
+                    request_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.ExhibitLabelAliasRequest.FromString,
                     response_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.ExhibitLabelAliasReply.SerializeToString,
             ),
     }
@@ -69,7 +86,7 @@ class MyService(object):
     """
 
     @staticmethod
-    def SayHello(request,
+    def GetAnswer(request,
             target,
             options=(),
             channel_credentials=None,
@@ -79,9 +96,9 @@ class MyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/MyService/SayHello',
-            src_dot_rpc_dot_proto_dot_QA__pb2.HelloRequest.SerializeToString,
-            src_dot_rpc_dot_proto_dot_QA__pb2.HelloReply.FromString,
+        return grpc.experimental.unary_unary(request, target, '/MyService/GetAnswer',
+            src_dot_rpc_dot_proto_dot_QA__pb2.QARequest.SerializeToString,
+            src_dot_rpc_dot_proto_dot_QA__pb2.QAReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -98,6 +115,23 @@ class MyService(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/MyService/GetOpenDocument',
             src_dot_rpc_dot_proto_dot_QA__pb2.OpenDocumentRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetExhibitAlias(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/MyService/GetExhibitAlias',
+            src_dot_rpc_dot_proto_dot_QA__pb2.ExhibitLabelAliasRequest.SerializeToString,
             src_dot_rpc_dot_proto_dot_QA__pb2.ExhibitLabelAliasReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
