@@ -98,6 +98,5 @@ class Answer:
         answer_start_pos, answer_end_pos = self.get_pos()
         input_ids = self._inputs['input_ids'][self._index]
 
-        answer = self._tokenizer.convert_tokens_to_string(self._tokenizer.convert_ids_to_tokens(input_ids[answer_start_pos:answer_end_pos]))
-
+        answer = self._tokenizer.convert_tokens_to_string(self._tokenizer.convert_ids_to_tokens(input_ids[answer_start_pos:answer_end_pos], skip_special_tokens=True))
         return answer.replace(' ', '')

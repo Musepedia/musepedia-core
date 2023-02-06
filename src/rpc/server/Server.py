@@ -28,7 +28,8 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         answer, text_id = self._qa_reader.get_answer(request.question, request.texts)
         if request.status == 2:
             answer = self._map_util.render_map(answer)
-        if answer == '[CLS]':
+        if len(answer) == 0:
+            # 没有答案，尝试OpenQA获取新的答案
             open_documents = self._open_qa_retriever.get_top_k_text(request.question, 15)
             answer = self._qa_reader.get_answer(request.question, open_documents)  # todo 需要open document的id
         answer_with_text_id.answer = answer

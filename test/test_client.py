@@ -20,7 +20,7 @@ def test_client_connection(execution_number):
                                   texts=[test_text],
                                   status=1)
     response = stub.SayHello(request)
-    assert response.answerWithTextId.answer == '3000年'
+    assert response.answerWithTextId.answer == '3000年', '抽取错误，答案为{0}'.format(response.answerWithTextId.answer)
 
 
 def test_dpr_with_gpu():
