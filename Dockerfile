@@ -8,4 +8,4 @@ RUN pip3 install torch==1.5.1+cpu torchvision==0.6.1+cpu -f https://download.pyt
 RUN pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 COPY . .
 
-CMD ["python3", "server/Server.py"]
+CMD ["python3", "-m", "src.rpc.server"]
