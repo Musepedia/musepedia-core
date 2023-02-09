@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
-from elasticsearch import Elasticsearch
 
-import Config
+from src.utils.ESTools import ESTools
 
 
 class OpenQARetriever:
@@ -9,13 +8,8 @@ class OpenQARetriever:
     开放域问答（Open domain QA）的检索器，用于从大量文本中找出最可能包含问题对应回答的文本
     """
 
-    def __init__(self, host=Config.ELASTIC_SEARCH_HOST, username=Config.ELASTIC_SEARCH_USERNAME,
-                 password=Config.ELASTIC_SEARCH_PASSWORD):
-        self.index_name = "paragraphs"
-        self.es = Elasticsearch(
-            hosts=host,
-            basic_auth=(username, password)
-        )
+    def __init__(self):
+        pass
 
     @staticmethod
     def check_texts_with_titles(texts: [str], titles: [str]) -> bool:
@@ -38,6 +32,7 @@ class OpenQARetriever:
         :return: 最可能包含question对应回答的k个文本
         """
         # 查询语句
+
         body = {
             'bool': {
                 "must": [
@@ -50,6 +45,6 @@ class OpenQARetriever:
             }
         }
         re = list()
-        for i in self.es.search(index=self.index_name, query=body, size=k)["hits"]["hits"]:
+        for i in ESTools.doSearch(body=body, size=k):
             re.append(i['_source']['content'])
         return re
