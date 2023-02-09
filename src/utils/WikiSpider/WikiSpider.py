@@ -2,12 +2,9 @@
 
 import requests
 from bs4 import BeautifulSoup
-from elasticsearch import Elasticsearch
-from langconv import *
 from loguru import logger
-from Config import ELASTIC_SEARCH_HOST
-from Config import ELASTIC_SEARCH_PASSWORD
-from Config import ELASTIC_SEARCH_USERNAME
+from langconv import *
+from src.utils.ESTools import ESTools
 
 
 def hk2s(context: str) -> str:
@@ -116,83 +113,11 @@ class WikiSpider:
     Wikipedia爬虫，从Wikipedia上爬取关键词对应的文章内容
     """
 
-    def __init__(self, host=ELASTIC_SEARCH_HOST,username=ELASTIC_SEARCH_USERNAME, password=ELASTIC_SEARCH_PASSWORD):
-        self.index_name = "paragraphs"
-        self.es = Elasticsearch(
-            hosts=host,
-            basic_auth=(username, password)
-        )
+    def __init__(self):
         self.header = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                           "Chrome/106.0.0.0 Safari/537.36 "
         }
-
-    def hasKey(self, key: str) -> bool:
-        """
-        判断关键字key是否存在
-
-        :param key：关键字
-        :return: key是否存在
-        """
-        body = {
-            'term': {
-                "name": key
-            }
-        }
-        queryResult = self.es.search(index=self.index_name, query=body, size=1)["hits"]
-        if queryResult is None:
-            return False
-        else:
-            return True
-
-    def createIndex(self):
-        """
-        创建索引
-        """
-
-        _index_map = {
-            "properties": {
-                "name": {
-                    "type": "keyword"
-                },
-                "title": {
-                    "type": "text",
-                    "analyzer": "ik_smart"
-                },
-                "content": {
-                    "type": "text",
-                    "analyzer": "ik_smart"
-                },
-                "source": {
-                    "type": "keyword"
-                }
-            }
-
-        }
-        if not self.es.indices.exists(index=self.index_name):
-            result = self.es.indices.create(index=self.index_name, mappings=_index_map)
-            if result.get("acknowledged"):
-                logger.info("索引创建成功")
-            else:
-                logger.info(f"索引创建失败:{result}")
-        else:
-            logger.info("索引已存在无需重复创建!")
-
-    def createDocument(self, name: str, title: str, content: str, source='wiki'):
-        """
-        在paragraphs下新建文档
-
-        :param name:（展品）名字
-        :param title:（展品）当前文档的标题——大致内容
-        :param content:（展品）文档内容
-        :param source: 文档来源
-        """
-
-        doc = {'name': name, 'title': title, 'content': content, 'source': source}
-        try:
-            self.es.create(index=self.index_name, id=name + '_' + title, document=doc)
-        except:
-            logger.warn("文档已存在！")
 
     def call_spider(self, keys: list[str]):
         """
@@ -207,11 +132,11 @@ class WikiSpider:
                 headers=self.header,
                 timeout=100
             )
+            es = ESTools()
             html = responses.text
             soup = BeautifulSoup(html, "lxml")
             pageinfo = ((soup.body.find(id="content").find(id="bodyContent")
-                         .find(id="mw-content-text"))
-            ).find(class_="mw-parser-output")
+                         .find(id="mw-content-text"))).find(class_="mw-parser-output")
 
             # 获取目录
             cata = pageinfo.find(id="toc").select("li")
@@ -242,10 +167,12 @@ class WikiSpider:
             # 文章长度处理
             paragraph = divide_paragraph(paragraph)
             # 导入es
+            _id = es.get_document_count()
             for _title in paragraph:
-                self.createDocument(name=key, title=_title, content=paragraph[_title])
+                _id += 1
+                es.createDocument(name=key, title=_title, content=paragraph[_title], _id=_id)
 
-    def get_keys_1_recursive(self, original_key: str) -> [str]:
+    def get_keys_1_recursive(self, original_key: str):
         """
         查询wikipedia上该original_key资料所有有超链接的关键词
 
@@ -257,6 +184,7 @@ class WikiSpider:
             headers=self.header,
             timeout=100
         )
+
         html = response.text
         soup = BeautifulSoup(html, "lxml")
 
@@ -264,8 +192,9 @@ class WikiSpider:
             (soup.body.find(id="content").find(id="bodyContent").find(id="mw-content-text"))
         ).find(class_="mw-parser-output")
 
-        keys = {}
-        if not self.hasKey(original_key):
+        es = ESTools()
+        keys = list()
+        if not es.hasKey(original_key):
             keys.append(original_key)
         tt = pageinfo.find_all('p')
         for j in tt:
@@ -278,3 +207,10 @@ class WikiSpider:
                     else:
                         continue
         return keys
+
+
+if __name__ == '__main__':
+    # serve()
+    spider = WikiSpider()
+    spider.call_spider(["狼"])
+
