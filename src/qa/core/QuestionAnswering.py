@@ -6,145 +6,280 @@ import numpy as np
 
 from transformers import AutoModelForQuestionAnswering, AutoTokenizer
 
-from common.exception.ExceptionHandler import catch, check_length
-from common.exception.TextLengthError import TextLengthError
-from common.log.QALogging import qa_logging
+from Config import USE_GPU
+from src.common.exception.ExceptionHandler import catch, check_length
+from src.common.log.ModelLogging import model_logging
+from src.common.log.QALogging import qa_logging, qa_logging_batch
 from src.qa.core.Answer import Answer
 
-MODEL_PATH = 'src/qa/models/roberta-base-chinese-extractive-qa'
 
-
-@catch(Exception)
-def preload():
+class QAReader:
     """
-    根据模型存储地址，加载tokenizer和模型
-    :return: tokenizer与模型
+    抽取式问答的Reader模块，用于从一定数量的小规模文本集合中抽取出对应问题的答案，目前支持基于RoBERTa模型的抽取式问答
     """
 
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
-    model = AutoModelForQuestionAnswering.from_pretrained(MODEL_PATH)
+    MODEL_PATH = '../models/roberta-base-chinese-extractive-qa'
 
-    return tokenizer, model
+    def __init__(self, model_path=MODEL_PATH):
+        self._model_path = model_path
+        self._device = 'cuda:0' if torch.cuda.is_available() and USE_GPU else 'cpu'
+        self._tokenizer, self._model = self.preload()
 
+    @model_logging('RoBERTa模型')
+    def preload(self):
+        """
+        根据模型存储地址，加载tokenizer和模型
 
-@catch(Exception)
-def get_pos_with_logit(start_logits, end_logits):
-    """
-    计算答案的起始位置和终止位置，以及相应的logits
-    :param start_logits: 起始logits
-    :param end_logits: 终止logits
-    :return: 2个tuple (position, logits)分别代表答案起始位置和终止位置
-    """
+        :return: tokenizer与模型构成的元组
+        """
 
-    startPosWithLogits = sorted(enumerate(start_logits), key=lambda x: x[1], reverse=True)
-    endPosWithLogits = sorted(enumerate(end_logits), key=lambda x: x[1], reverse=True)
+        tokenizer = AutoTokenizer.from_pretrained(self._model_path)
+        model = AutoModelForQuestionAnswering.from_pretrained(self._model_path).to(self._device)
 
-    return startPosWithLogits[0], endPosWithLogits[0]
+        return tokenizer, model
 
+    @property
+    def model(self):
+        """
+        模型的getter方法
 
-@catch(Exception)
-@check_length(512)
-@qa_logging(question_index=2, text_index=3)
-def get_possible_answer(tokenizer, model, question, text, text_id):
-    """
-    处理1个问题对应1篇文本，并得到答案
-    :param tokenizer: 用于将字符与token映射
-    :param model: 模型（现在是Roberta）
-    :param question: 问题
-    :param text: 待抽取的文本
-    :param text_id: 带抽取的文本对应的id
-    :return: 问题对应的答案，如果没有答案，那么返回[CLS]
-    """
+        :return: 返回QAReader的模型
+        """
 
-    inputs = tokenizer(question, text, add_special_tokens=True, return_tensors='pt')
-    outputs = model(**inputs)
+        return self._model
 
-    answerStartLogits = outputs.start_logits[0]
-    answerEndLogits = outputs.end_logits[0]
+    @model.setter
+    def model(self, checkpoint):
+        pass
 
-    answerParamPair = get_pos_with_logit(answerStartLogits, answerEndLogits)
-    answer = Answer(tokenizer, inputs, outputs, answerParamPair)
+    def set_train_mode(self):
+        """
+        切换模型至训练模式
+        """
 
-    return answer, text_id
+        self._model.train()
 
+    def set_evaluation_mode(self):
+        """
+        切换模型至推演模式
+        """
 
-@catch(Exception)
-def wrap_get_possible_answer(args):
-    """
-    封装get_possible_answer()，适用于map()调用
-    :param args: 函数get_possible_answer()所需的参数
-    :return: tuple 包含答案的分数和文本
-    """
+        self._model.eval()
 
-    res, textId = get_possible_answer(*args)
-    return res.get_score(), res.to_string(), textId
+    @staticmethod
+    @catch(Exception)
+    def get_pos_with_logit(start_logits, end_logits):
+        """
+        计算答案的起始位置和终止位置，以及相应的logits
 
+        :param start_logits: 起始logits
+        :param end_logits: 终止logits
+        :return: 2个tuple (position, logits)分别代表答案起始位置和终止位置
+        """
 
-@catch(Exception)
-def get_answer(tokenizer, model, question, texts):
-    """
-    处理1个问题对应多篇文本，将从若干文本中分别抽取答案，同时为每份答案赋予分数（实际是概率），取最高者作为答案
-    :param tokenizer: 用于将字符与token映射
-    :param model: 模型
-    :param question: 问题
-    :param texts: 待抽取的文本集合（必须是可迭代对象）
-    :return: 问题对应的答案和对应抽取的文本，如果没有答案，那么返回[CLS]
-    """
+        start_pos_with_logits = sorted(enumerate(start_logits), key=lambda x: x[1], reverse=True)
+        end_pos_with_logits = sorted(enumerate(end_logits), key=lambda x: x[1], reverse=True)
 
-    maxScore = 0
-    bestAnswer = ""
-    textIdForBestAnswer = 0
-    for text in texts:
-        possibleAnswer, textId = get_possible_answer(tokenizer, model, question, text.text, text.id)
+        return start_pos_with_logits[0], end_pos_with_logits[0]
 
-        if possibleAnswer is None:  # 如果未按预期得到答案，则跳过本轮
-            continue
-        score = possibleAnswer.get_score()
-        if score > maxScore:
-            maxScore = score
-            bestAnswer = possibleAnswer.to_string()
-            textIdForBestAnswer = textId
+    @catch(Exception)
+    @check_length(512)
+    @qa_logging(question_index=1, text_index=2)
+    def get_possible_answer(self, question, text, text_id):
+        """
+        处理1个问题对应1篇文本，并得到答案
 
-    return bestAnswer, textIdForBestAnswer
+        :param tokenizer: 用于将字符与token映射
+        :param model: 模型（现在是Roberta）
+        :param question: 问题
+        :param text: 待抽取的文本
+        :param text_id: 带抽取的文本对应的id
+        :return: 问题对应的答案，如果没有答案，那么返回[CLS]
+        """
 
+        inputs = self._tokenizer(question, text, add_special_tokens=True, return_tensors='pt').to(self._device)
+        outputs = self._model(**inputs)
 
-@catch(Exception)
-def get_answer_parallel(tokenizer, model, question, texts, pool_num=4):
-    """
-    使用并行的方式，处理1个问题对应多篇文本，将从若干文本中分别抽取答案，同时为每份答案赋予分数（实际是概率），取最高者作为答案
-    :param tokenizer: 用于将字符与token映射
-    :param model: 模型
-    :param question: 问题
-    :param texts: 待抽取的文本集合（必须是可迭代对象）
-    :param pool_num: 并行进程数，默认取4
-    :return: 问题对应的答案，如果没有答案，那么返回[CLS]
-    """
+        answer_start_logits = outputs.start_logits[0]
+        answer_end_logits = outputs.end_logits[0]
 
-    with multiprocessing.Pool(pool_num) as pool:
-        possibleAnswers = pool.map(wrap_get_possible_answer, [(tokenizer, model, question, texts[i].text, texts[i].id) for i in range(len(texts))])
+        answer_param_pair = self.get_pos_with_logit(answer_start_logits, answer_end_logits)
+        answer = Answer(self._tokenizer, inputs, outputs, answer_param_pair)
 
-    maxScore = 0
-    bestAnswer = ""
-    textIdForBestAnswer = 0
-    for score, answer, textId in possibleAnswers:
-        if score > maxScore:
-            maxScore = score
-            bestAnswer = answer
-            textIdForBestAnswer = textId
+        return answer, text_id
 
-    return bestAnswer, textIdForBestAnswer
+    @catch(Exception)
+    @check_length(512)
+    @qa_logging_batch(question_list_index=1, text_list_index=2)
+    def get_possible_answer_batch(self, question, text, text_id, answer=None):
+        """
+        处理n个问题对应n篇文本的情况，问题数量和文本数量一致，视作一组batch
+        该方法可以提高显存和CUDA的利用率，仅用于src.qa.train（训练）和src.qa.evaluation（评测），不用于推理
+
+        :param question: 问题batch
+        :param text: 待抽取的文本batch
+        :param text_id: 待抽取的文本id batch
+        :param answer: 训练样本中的正确回答batch，包含回答的起始位置和终止位置，需要为tuple类型，第一个元素为起始位置，第二个元素为终止位置
+        :return: 问题对应的答案列表，如果没有答案，那么返回[CLS]，结果长度为n，与传入的问题和文本数量相同
+        """
+
+        answer_list = []
+        inputs = self._tokenizer(question, text, add_special_tokens=True, return_tensors='pt', padding=True).to(self._device)
+        if answer is not None and self._model.training:
+            # 仅在训练模式下使用，训练模式下需要向模型中传入正确回答的起始和终止位置来计算loss
+            inputs['start_positions'] = torch.LongTensor(answer[0]).to(self._device)
+            inputs['end_positions'] = torch.LongTensor(answer[1]).to(self._device)
+            outputs = self._model(**inputs)
+        else:
+            outputs = self._model(**inputs)
+
+        for i in range(len(text)):
+            answer_start_logits = outputs.start_logits[i]
+            answer_end_logits = outputs.end_logits[i]
+
+            answer_param_pair = self.get_pos_with_logit(answer_start_logits, answer_end_logits)
+            answer = Answer(self._tokenizer, inputs, outputs, answer_param_pair, i)
+            answer_list.append(answer)
+
+        return answer_list, text_id, outputs.loss
+
+    @catch(Exception)
+    def wrap_get_possible_answer(self, args):
+        """
+        封装get_possible_answer()，适用于map()调用
+
+        :param args: 函数get_possible_answer()所需的参数
+        :return: tuple 包含答案的分数和文本
+        """
+
+        res, text_id = self.get_possible_answer(*args)
+        return res.get_score(), res.to_string(), text_id
+
+    @catch(Exception)
+    def get_answer(self, question, texts):
+        """
+        处理1个问题对应多篇文本，将从若干文本中分别抽取答案，同时为每份答案赋予分数（实际是概率），取最高者作为答案
+
+        :param question: 问题
+        :param texts: 待抽取的文本集合（必须是可迭代对象）
+        :return: 问题对应的答案和对应抽取的文本，如果没有答案，那么返回[CLS]
+        """
+
+        max_score = 0
+        best_answer = ""
+        text_id_for_best_answer = 0
+        for text in texts:
+            possible_answer, text_id = self.get_possible_answer(question, text.text, text.id)
+
+            if possible_answer is None:  # 如果未按预期得到答案，则跳过本轮
+                continue
+            score = possible_answer.get_score()
+            if score > max_score:
+                max_score = score
+                best_answer = possible_answer.to_string()
+                text_id_for_best_answer = text_id
+
+        return best_answer, text_id_for_best_answer
+
+    @catch(Exception)
+    def get_answer_batch(self, question, texts, batch_size, answer=None):
+        """
+        处理n个问题对应多篇文本，将从若干文本中分别抽取答案，同时为每份答案赋予分数（实际是概率），取最高者作为答案，
+        问题数量和文本数量可以不一致（允许文本数量 > 问题数量的情况），视作一组batch
+        该方法可以提高显存和CUDA的利用率，仅用于src.qa.train（训练）和src.qa.evaluation（评测），不用于推理
+
+        :param question: 问题batch
+        :param texts: 待抽取的文本集合batch
+        :param batch_size: batch大小
+        :param answer: 训练样本中的正确回答batch，包含回答的起始位置和终止位置，需要为tuple类型，第一个元素为起始位置，第二个元素为终止位置
+        :return: 问题对应的答案列表，如果没有答案，那么返回[CLS]，结果长度同batch_size
+        """
+
+        best_answer_list = []
+        text_id_for_best_answer_list = []
+
+        batch_question = []
+        batch_text = []
+        batch_id = []
+        if answer is not None:
+            batch_answer = [[], []]
+        else:
+            batch_answer = []
+        for i in range(batch_size):
+            for j in range(len(texts[i])):
+                batch_question.append(question[i])
+                batch_text.append(texts[i][j].text)
+                batch_id.append(texts[i][j].id)
+                if answer is not None:
+                    batch_answer[0].append(answer[0][i])
+                    batch_answer[1].append(answer[1][i])
+
+        possible_answer_list, text_id_list, loss = self.get_possible_answer_batch(batch_question, batch_text, batch_id, tuple(batch_answer))
+        for i in range(batch_size):
+            max_score = 0
+            best_answer = ""
+            text_id_for_best_answer = 0
+
+            for j in range(len(texts[i])):
+                answer_index = i + j
+                possible_answer, text_id = possible_answer_list[answer_index], text_id_list[answer_index]
+
+                if possible_answer is None:
+                    continue
+                score = possible_answer.get_score()
+                if score > max_score:
+                    max_score = score
+                    best_answer = possible_answer.to_string()
+                    text_id_for_best_answer = text_id
+
+            best_answer_list.append(best_answer)
+            text_id_for_best_answer_list.append(text_id_for_best_answer)
+
+        return best_answer_list, text_id_for_best_answer_list, loss
+
+    @catch(Exception)
+    def get_answer_parallel(self, question, texts, pool_num=4):
+        """
+        使用并行的方式，处理1个问题对应多篇文本，将从若干文本中分别抽取答案，同时为每份答案赋予分数（实际是概率），取最高者作为答案
+
+        :param tokenizer: 用于将字符与token映射
+        :param model: 模型
+        :param question: 问题
+        :param texts: 待抽取的文本集合（必须是可迭代对象）
+        :param pool_num: 并行进程数，默认取4
+        :return: 问题对应的答案，如果没有答案，那么返回[CLS]
+        """
+
+        with multiprocessing.Pool(pool_num) as pool:
+            possible_answers = pool.map(self.wrap_get_possible_answer,
+                                       [(self._tokenizer, self._model, question, texts[i].text, texts[i].id) for i in
+                                        range(len(texts))])
+
+        max_score = 0
+        best_answer = ""
+        text_id_for_best_answer = 0
+        for score, answer, text_id in possible_answers:
+            if score > max_score:
+                max_score = score
+                best_answer = answer
+                text_id_for_best_answer = text_id
+
+        return best_answer, text_id_for_best_answer
 
 
 if __name__ == '__main__':
-    # question = "银杏的寿命有多长"
-    # texts = [
-    #     r"""
-    #     银杏（学名：Ginkgo biloba），落叶乔木，寿命可达3000年以上。又名公孙树、鸭掌树、鸭脚树、鸭脚子等，其裸露的种子称为白果，叶称蒲扇。属裸子植物银杏门唯一现存物种，和它同门的所有其他物种都已灭绝，因此被称为植物界的“活化石”。已发现的化石可以追溯到2.7亿年前。银杏原产于中国，现广泛种植于全世界，并被早期引入人类历史。它有多种用途，可作为传统医学用途和食物。
-    #     """,
-    #     r"""
-    #     银杏种子可以食用，在中国被称为白果，白果去壳后可煮熟直接食用，制作糖水配料等。以中医角度来说，据《本草纲目》记载：“白果小苦微甘，性温有小毒，多食令人腹胀”；银杏的果实内含小量氢氰酸毒素，性温，多食令人腹胀，遇热毒性减少，所以生吃或大量进食易引起中毒；多见于小儿；有呕吐、精神萎靡、发热、抽搐等征状。又说“熟食温肺、益气、定喘嗽、缩小便，止白浊，生食降痰，消毒杀虫，嚼浆涂鼻面手足，去鼻疽疱黑干黯皴皱及疥癣疳虫阴虱”。而银杏的种籽，即果仁有暖肺、止喘嗽及减少痰量之功效。特别是对于哮喘、慢性气管及支气管炎及肺结核等病症有明显的疗效。而且对补助泌尿系统有好处，滋阴益肾，可改善尿频。
-    #     """,
-    # ]
+    class TestText:
+        """
+        用于测试的Text类，模拟rpc传来的RpcExhibitText，包含文本的id和文本内容
+        """
+
+        def __init__(self, text, id):
+            self.text = text
+            self.id = id
+
+        @staticmethod
+        def convert_to_text(text):
+            return TestText(text, 0)
 
     question = '狼和狗有什么关系'
     texts = [
@@ -159,6 +294,9 @@ if __name__ == '__main__':
     "已知豢养的狼在 9-10 个月就可以繁殖，而野生狼最早的繁殖纪录也要两岁雌狼每年都可以繁殖，通常每年一胎与郊狼不同的是，狼繁殖力不会衰老直到死亡近亲交配鲜少发生，虽然在加拿大萨克其万省和 Isle Royale 有这样的纪录狼通常在暮冬发情，较年长、有子女的雌狼发情时间比年轻雌狼早约 2-3 周发情前，狼群可能暂时解散直到交配期结束愿意接受配偶时，雌狼会将尾巴偏向一边，露出生殖器官交配时狼会有交配姿势，时间 5-36 分钟不等由于狼的发情期为时仅一个月，与狗不同的是，雄狼不会放弃配偶去找其它雌狼雌狼在怀孕期间会留在狼穴，远离其领域的边界区域，以减少与其它狼群冲突的机会较年长的雌狼通常在前一胎的狼穴生产，年轻雌狼则通常选择靠近其出生地的附近怀孕为期 62-75 天，幼狼通常在夏季出生，每胎平均 5-6 只幼狼，14-17 只发生率为 1%每胎的数量倾向随猎物的丰富增加相对犬科其它物种，每胎数量少时，幼狼体型较大与母狼不同，公狼不会反刍食物给幼狼，它会从猎杀中带回食物。"
     ]
 
-    tokenizer, model = preload()
-    print(get_answer_parallel(tokenizer, model, question, texts))
-    # print(get_answer(tokenizer, model, question, texts))
+    texts = [TestText.convert_to_text(text) for text in texts]
+
+    reader = QAReader()
+
+    # print(reader.get_answer_parallel(question, texts))
+    print(reader.get_answer(question, texts))
