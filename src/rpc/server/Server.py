@@ -12,6 +12,7 @@ from src.rpc.proto import QA_pb2_grpc, QA_pb2
 from src.qa.core.QuestionAnswering import QAReader
 from src.qa.utils.MapUtil import MapUtil
 from src.utils.NLPUtil import NLPUtil
+from src.utils.WikiSpider.WikiSpider import WikiSpider
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
@@ -22,9 +23,11 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         self._map_util = MapUtil()
         self._open_qa_retriever = OpenQARetriever()
         self._nlp_util = NLPUtil()
+        self._wiki_spider_util = WikiSpider()
 
     def GetAnswer(self, request: QA_pb2.QARequest, context):
         answer_with_text_id = QA_pb2.AnswerWithTextId()
+        self._qa_reader.
         answer, text_id = self._qa_reader.get_answer(request.question, request.texts)
         if request.status == 2:
             answer = self._map_util.render_map(answer)
@@ -38,7 +41,10 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         return QA_pb2.QAReply(answerWithTextId=answer_with_text_id)
 
     def GetOpenDocument(self, request: QA_pb2.OpenDocumentRequest, context):
-        pass
+        original_keys = request.texts
+        for one_key in original_keys:
+            self._wiki_spider_util.callSpider(self._wiki_spider_util.get_keys_1_recursive(one_key))
+
 
     def GetExhibitAlias(self, request: QA_pb2.ExhibitLabelAliasRequest, context):
         alias_list = self._nlp_util.get_exhibit_alias(request.texts)
