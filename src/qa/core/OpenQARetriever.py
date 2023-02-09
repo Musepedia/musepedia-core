@@ -23,13 +23,14 @@ class OpenQARetriever:
 
         return len(texts) == len(titles)
 
-    def get_top_k_text(self, question: str, k: int) -> [str]:
+    def get_top_k_text(self, question: str, k: int, name=None) -> [(str, str)]:
         """
         从texts中找出最可能包含question对应回答的k个文本
 
+        :param name: 限定的对象名字
         :param question: 问题
         :param k: top k
-        :return: 最可能包含question对应回答的k个文本
+        :return: 最可能包含question对应回答的k个文本及其id
         """
         # 查询语句
 
@@ -44,7 +45,22 @@ class OpenQARetriever:
                 ]
             }
         }
-        re = list()
-        for i in ESTools.doSearch(body=body, size=k):
-            re.append(i['_source']['content'])
-        return re
+        if name is not None:
+            body['bool']['must'].append({
+                "term": {
+                    "name": name
+                }
+            })
+        result = list()
+        es = ESTools()
+        for i in es.doSearch(body=body, k=k):
+            result.append((i['_source']['content'], i['_id']))
+        return result
+
+
+if __name__ == '__main__':
+    qa = OpenQARetriever()
+    re = qa.get_top_k_text(question="女王凤凰螺的分布", k=10, name="女王凤凰螺")
+    print(re)
+    re = qa.get_top_k_text(question="女王凤凰螺的分布", k=10)
+    print(re)
