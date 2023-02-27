@@ -4,7 +4,7 @@ name: Build and push to docker
 
 on:
   push:
-    branches: [ "master", "dev" ]
+    branches: [ "master", "dev*" ]
     tags: [ "v*" ]
 
 env:
