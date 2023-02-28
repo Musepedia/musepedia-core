@@ -27,24 +27,24 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
 
     def GetAnswer(self, request: QA_pb2.QARequest, context):
         answer_with_text_id = QA_pb2.AnswerWithTextId()
-        self._qa_reader.
         answer, text_id = self._qa_reader.get_answer(request.question, request.texts)
         if request.status == 2:
             answer = self._map_util.render_map(answer)
         if len(answer) == 0:
             # 没有答案，尝试OpenQA获取新的答案
             open_documents = self._open_qa_retriever.get_top_k_text(request.question, 15)
-            answer = self._qa_reader.get_answer(request.question, open_documents)  # todo 需要open document的id
+            answer, text_id = self._qa_reader.get_answer(request.question, open_documents)  # todo 需要open document的id
         answer_with_text_id.answer = answer
-        answer_with_text_id.textId = text_id
+        answer_with_text_id.text_id = text_id
 
-        return QA_pb2.QAReply(answerWithTextId=answer_with_text_id)
+        return QA_pb2.QAReply(answer_with_text_id=answer_with_text_id)
 
     def GetOpenDocument(self, request: QA_pb2.OpenDocumentRequest, context):
-        original_keys = request.texts
+        original_keys = []
+        for text in request.texts:
+            original_keys.append(text.text)
         for one_key in original_keys:
-            self._wiki_spider_util.callSpider(self._wiki_spider_util.get_keys_1_recursive(one_key))
-
+            self._wiki_spider_util.call_spider(self._wiki_spider_util.get_keys_1_recursive(one_key))
 
     def GetExhibitAlias(self, request: QA_pb2.ExhibitLabelAliasRequest, context):
         alias_list = self._nlp_util.get_exhibit_alias(request.texts)

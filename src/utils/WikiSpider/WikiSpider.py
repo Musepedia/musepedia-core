@@ -3,7 +3,7 @@
 import requests
 from bs4 import BeautifulSoup
 from loguru import logger
-from langconv import *
+from src.utils.WikiSpider.langconv import *
 from src.utils.ESTools import ESTools
 
 
@@ -119,7 +119,7 @@ class WikiSpider:
                           "Chrome/106.0.0.0 Safari/537.36 "
         }
 
-    def call_spider(self, keys: list[str]):
+    def call_spider(self, keys: [str]):
         """
         根据关键词在Wikipedia上进行对应文章的爬虫
 
