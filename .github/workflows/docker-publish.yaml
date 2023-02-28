@@ -49,3 +49,5 @@ jobs:
           tags: ${{ steps.meta-core.outputs.tags }}
           labels: ${{ steps.meta-core.outputs.labels }}
           provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
