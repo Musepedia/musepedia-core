@@ -170,7 +170,7 @@ class WikiSpider:
             _id = es.get_document_count()
             for _title in paragraph:
                 _id += 1
-                es.createDocument(name=key, title=_title, content=paragraph[_title], _id=_id)
+                es.create_document(name=key, title=_title, content=paragraph[_title], _id=_id)
 
     def get_keys_1_recursive(self, original_key: str):
         """
@@ -194,7 +194,7 @@ class WikiSpider:
 
         es = ESTools()
         keys = list()
-        if not es.hasKey(original_key):
+        if not es.has_key(original_key):
             keys.append(original_key)
         tt = pageinfo.find_all('p')
         for j in tt:
@@ -202,7 +202,7 @@ class WikiSpider:
             for i in tt:
                 if i['href'][0:7] == '/wiki/%':
                     key = Converter("zh-hans").convert(i.text)
-                    if not es.hasKey(key):
+                    if not es.has_key(key):
                         keys.append(key)
                     else:
                         continue
@@ -213,4 +213,3 @@ if __name__ == '__main__':
     # serve()
     spider = WikiSpider()
     spider.call_spider(["狼"])
-
