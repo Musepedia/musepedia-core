@@ -41,9 +41,18 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         return QA_pb2.QAReply(answerWithTextId=answer_with_text_id)
 
     def GetOpenDocument(self, request: QA_pb2.OpenDocumentRequest, context):
-        original_keys = request.texts
+        original_keys = []
+        for text in request.texts:
+            for key in self._nlp_util.get_keyword(text.text):
+                original_keys.append(key)
+
         for one_key in original_keys:
-            self._wiki_spider_util.callSpider(self._wiki_spider_util.get_keys_1_recursive(one_key))
+            try:
+                self._wiki_spider_util.call_spider(self._wiki_spider_util.get_keys_1_recursive(one_key))
+            finally:
+                pass
+        
+        return QA_pb2.OpenDocumentResponse(label="done")
 
 
     def GetExhibitAlias(self, request: QA_pb2.ExhibitLabelAliasRequest, context):
