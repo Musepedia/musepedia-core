@@ -28,3 +28,6 @@ USE_GPU = True
 ELASTIC_SEARCH_HOST = "http://pt.musepedia.cn:9200"
 ELASTIC_SEARCH_USERNAME = "elastic"
 ELASTIC_SEARCH_PASSWORD = "r2tiq2FqAd5"
+
+# proxy代理
+PROXY = "http://34.82.217.181:5555"
