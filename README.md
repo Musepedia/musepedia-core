@@ -1,6 +1,6 @@
 # MGS-core
 - 本仓库包含项目的Question Answering和Recommender System算法，不包含业务代码（数据分析模块除外）
-- **Version 1.1**
+- **Version 1.1.1**
 
 ### Usage
 根据`requirements.txt`要求配置依赖（请根据本地CUDA版本安装合适的PyTorch v1.5.1，参考https://pytorch.org/get-started/previous-versions/）

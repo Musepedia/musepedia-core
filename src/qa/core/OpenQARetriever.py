@@ -53,7 +53,7 @@ class OpenQARetriever:
             })
         result = list()
         es = ESTools()
-        for i in es.doSearch(body=body, k=k):
+        for i in es.do_search(body=body, k=k):
             result.append((i['_source']['content'], int(i['_id'])))
         return result
 

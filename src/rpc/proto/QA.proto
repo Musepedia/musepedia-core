@@ -30,10 +30,6 @@ message OpenDocumentRequest {
     repeated RpcExhibitText texts = 2;
 }
 
-message OpenDocumentResponse{
-    string label = 1;
-}
-
 message ExhibitLabelAliasRequest {
     repeated string texts = 1;
 }

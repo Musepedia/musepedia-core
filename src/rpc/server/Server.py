@@ -46,10 +46,7 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
                 original_keys.append(key)
 
         for one_key in original_keys:
-            try:
-                self._wiki_spider_util.call_spider(self._wiki_spider_util.get_keys_1_recursive(one_key))
-            finally:
-                pass
+            self._wiki_spider_util.call_spider(self._wiki_spider_util.get_keys_1_recursive(one_key))
 
         return QA_pb2.google_dot_protobuf_dot_empty__pb2.Empty()
 

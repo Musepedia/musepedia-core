@@ -3,6 +3,8 @@
 import requests
 from bs4 import BeautifulSoup
 from loguru import logger
+
+from src.common.exception.ExceptionHandler import catch
 from src.utils.WikiSpider.langconv import *
 from src.utils.ESTools import ESTools
 
@@ -119,6 +121,7 @@ class WikiSpider:
                           "Chrome/106.0.0.0 Safari/537.36 "
         }
 
+    @catch(Exception)
     def call_spider(self, keys: [str]):
         """
         根据关键词在Wikipedia上进行对应文章的爬虫
@@ -172,6 +175,7 @@ class WikiSpider:
                 _id += 1
                 es.create_document(name=key, title=_title, content=paragraph[_title], _id=_id)
 
+    @catch(Exception)
     def get_keys_1_recursive(self, original_key: str):
         """
         查询wikipedia上该original_key资料所有有超链接的关键词
