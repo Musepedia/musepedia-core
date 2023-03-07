@@ -28,3 +28,9 @@ USE_GPU = True
 ELASTIC_SEARCH_HOST = "http://pt.musepedia.cn:9200"
 ELASTIC_SEARCH_USERNAME = "elastic"
 ELASTIC_SEARCH_PASSWORD = "r2tiq2FqAd5"
+
+# OpenAI API Key
+OPENAI_API_KEY = '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'
+
+# OpenAI Organization
+OPENAI_ORGANIZATION = 'org-7ZRKpCfXN1him01dkzObK6px'
