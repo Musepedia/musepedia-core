@@ -17,19 +17,16 @@ def stub():
 
 
 @pytest.mark.parametrize('execution_number', range(1))
-def test_client_connection(execution_number):
-    channel = grpc.insecure_channel('localhost:{0}'.format(GRPC_PORT))
-    stub = QA_pb2_grpc.MyServiceStub(channel)
-
+def test_client_connection(execution_number, stub):
     test_text = QA_pb2.RpcExhibitText()
     test_text.id = 1
     test_text.text = '银杏（学名：Ginkgo biloba），落叶乔木，寿命可达3000年以上。'
 
     request = QA_pb2.QARequest(question='银杏的寿命有多长',
-                                  texts=[test_text],
-                                  status=1)
+                               texts=[test_text],
+                               status=1)
     response = stub.GetAnswer(request)
-    assert response.answerWithTextId.answer == '3000年', '抽取错误，答案为{0}'.format(response.answerWithTextId.answer)
+    assert response.answer_with_text_id.answer == '3000年', '抽取错误，答案为{0}'.format(response.answer_with_text_id.answer)
 
 
 def test_dpr_with_gpu():
@@ -46,7 +43,14 @@ def test_dpr_with_gpu():
 
 
 def test_get_open_document(stub):
-    pass
+    test_text = QA_pb2.RpcExhibitText()
+    test_text.id = 1
+    test_text.text = '银杏（学名：Ginkgo biloba），落叶乔木，寿命可达3000年以上。'
+
+    request = QA_pb2.OpenDocumentRequest(label='银杏',
+                                         texts=[test_text])
+
+    stub.GetOpenDocument(request)
 
 
 def test_get_exhibit_label_alias(stub):

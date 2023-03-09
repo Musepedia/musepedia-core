@@ -17,7 +17,7 @@ class ESTools:
             basic_auth=(username, password)
         )
 
-    def hasKey(self, key: str) -> bool:
+    def has_key(self, key: str) -> bool:
         """
         判断关键字key是否存在
 
@@ -35,7 +35,7 @@ class ESTools:
         else:
             return True
 
-    def createIndex(self):
+    def create_index(self):
         """
         创建索引
         """
@@ -68,14 +68,14 @@ class ESTools:
         else:
             logger.info("索引已存在无需重复创建!")
 
-    def deleteIndex(self):
+    def delete_index(self):
         """
         删除索引
         :return:null
         """
         self.es.indices.delete(index=self.index_name)
 
-    def createDocument(self, name: str, title: str, content: str, _id: int, source='wiki'):
+    def create_document(self, name: str, title: str, content: str, _id: int, source='wiki'):
         """
         在paragraphs下新建文档
 
@@ -102,7 +102,7 @@ class ESTools:
         body = {'match_all': {}}
         return self.es.count(index=self.index_name, query=body)['count']
 
-    def doSearch(self, body: dict, k: int):
+    def do_search(self, body: dict, k: int):
         """
         根据关键词返回文档
 
