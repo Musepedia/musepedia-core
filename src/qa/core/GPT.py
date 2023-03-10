@@ -4,6 +4,7 @@ import openai
 
 from Config import OPENAI_API_KEY, OPENAI_ORGANIZATION
 from src.common.exception.ExceptionHandler import check_length, catch
+from src.common.log.GPTLogging import gpt_logging
 from src.common.utils.Template import template
 from src.qa.utils.TemplateUtil import TemplateUtil
 
@@ -87,6 +88,7 @@ class GPT:
 
     @catch(Exception)
     @check_length(4096)
+    @gpt_logging
     def generate(self, user_prompt: str, system_prompt: str) -> GPTCompletion:
         """
         根据构造出的prompt，通过API请求生成回答

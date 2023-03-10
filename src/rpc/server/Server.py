@@ -6,9 +6,10 @@ import grpc
 from src.common.exception.ExceptionHandler import catch
 from src.common.log.ServiceLogging import service_logging
 from concurrent import futures
-from Config import GRPC_PORT, ROBERTA_MODEL_PATH
+from Config import GRPC_PORT, ROBERTA_MODEL_PATH, TEMPLATE_PATH
+from src.qa.core.GPT import GPT, GPTContext
 from src.qa.core.OpenQARetriever import OpenQARetriever
-from src.rpc.proto import QA_pb2_grpc, QA_pb2
+from src.rpc.proto import QA_pb2_grpc, QA_pb2, GPT_pb2, GPT_pb2_grpc
 from src.qa.core.QuestionAnswering import QAReader
 from src.qa.utils.MapUtil import MapUtil
 from src.utils.NLPUtil import NLPUtil
@@ -52,11 +53,32 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         return QA_pb2.ExhibitLabelAliasReply(aliases=alias_list)
 
 
+class GPTService(GPT_pb2_grpc.GPTServiceServicer):
+    def __init__(self):
+        self._gpt = GPT(template_dir_path=TEMPLATE_PATH)
+
+    def GetAnswerWithGPT(self, request: GPT_pb2.GPTRequest, context):
+        user_prompt = self._gpt.create_user_prompt(GPTContext(user_question=request.context.user_question,
+                                                              exhibit_label=request.context.exhibit_label,
+                                                              exhibit_description=request.context.exhibit_description))
+        system_prompt = self._gpt.create_system_prompt(museum_name=request.museum.museum_name,
+                                                       museum_description=request.museum.museum_description)
+        gpt_completion = self._gpt.generate(user_prompt, system_prompt)
+        if gpt_completion is not None:
+            return GPT_pb2.GPTReply(prompt=gpt_completion.prompt,
+                                    completion=gpt_completion.completion,
+                                    prompt_tokens=gpt_completion.prompt_tokens,
+                                    completion_tokens=gpt_completion.completion_tokens)
+
+        return gpt_completion
+
+
 @service_logging
 @catch(KeyboardInterrupt)
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     QA_pb2_grpc.add_MyServiceServicer_to_server(Greeter(), server)
+    GPT_pb2_grpc.add_GPTServiceServicer_to_server(GPTService(), server)
     server.add_insecure_port('[::]:{0}'.format(GRPC_PORT))
     server.start()
     server.wait_for_termination()

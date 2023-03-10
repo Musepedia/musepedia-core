@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+service GPTService {
+    rpc GetAnswerWithGPT (GPTRequest) returns (GPTReply) {}
+}
+
+message GPTContext {
+    string user_question = 1;
+    string exhibit_label = 2;
+    string exhibit_description = 3;
+}
+
+message Museum {
+    string museum_name = 1;
+    string museum_description = 2;
+}
+
+message GPTRequest {
+    GPTContext context = 1;
+    Museum museum = 2;
+}
+
+message GPTReply {
+    string prompt = 1;
+    string completion = 2;
+    int32 prompt_tokens = 3;
+    int32 completion_tokens = 4;
+}
