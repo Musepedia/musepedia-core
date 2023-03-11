@@ -42,7 +42,7 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
     def GetOpenDocument(self, request: QA_pb2.OpenDocumentRequest, context):
         original_keys = []
         for text in request.texts:
-            for key in self._nlp_util.get_keyword(text.text):
+            for key in self._nlp_util.get_keyword(text):
                 original_keys.append(key)
 
         for one_key in original_keys:

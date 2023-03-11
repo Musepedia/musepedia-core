@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16src/rpc/proto/QA.proto\x1a\x1bgoogle/protobuf/empty.proto\"*\n\x0eRpcExhibitText\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04text\x18\x02 \x01(\t\"M\n\tQARequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\x12\x0e\n\x06status\x18\x03 \x01(\x05\"D\n\x13OpenDocumentRequest\x12\r\n\x05label\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\")\n\x18\x45xhibitLabelAliasRequest\x12\r\n\x05texts\x18\x01 \x03(\t\"3\n\x10\x41nswerWithTextId\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0f\n\x07text_id\x18\x02 \x01(\x03\"9\n\x07QAReply\x12.\n\x13\x61nswer_with_text_id\x18\x01 \x01(\x0b\x32\x11.AnswerWithTextId\")\n\x16\x45xhibitLabelAliasReply\x12\x0f\n\x07\x61liases\x18\x01 \x03(\t2\xbc\x01\n\tMyService\x12#\n\tGetAnswer\x12\n.QARequest\x1a\x08.QAReply\"\x00\x12\x41\n\x0fGetOpenDocument\x12\x14.OpenDocumentRequest\x1a\x16.google.protobuf.Empty\"\x00\x12G\n\x0fGetExhibitAlias\x12\x19.ExhibitLabelAliasRequest\x1a\x17.ExhibitLabelAliasReply\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x16src/rpc/proto/QA.proto\x1a\x1bgoogle/protobuf/empty.proto\"*\n\x0eRpcExhibitText\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04text\x18\x02 \x01(\t\"M\n\tQARequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\x12\x0e\n\x06status\x18\x03 \x01(\x05\"3\n\x13OpenDocumentRequest\x12\r\n\x05label\x18\x01 \x01(\t\x12\r\n\x05texts\x18\x02 \x03(\t\")\n\x18\x45xhibitLabelAliasRequest\x12\r\n\x05texts\x18\x01 \x03(\t\"3\n\x10\x41nswerWithTextId\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0f\n\x07text_id\x18\x02 \x01(\x03\"9\n\x07QAReply\x12.\n\x13\x61nswer_with_text_id\x18\x01 \x01(\x0b\x32\x11.AnswerWithTextId\")\n\x16\x45xhibitLabelAliasReply\x12\x0f\n\x07\x61liases\x18\x01 \x03(\t2\xbc\x01\n\tMyService\x12#\n\tGetAnswer\x12\n.QARequest\x1a\x08.QAReply\"\x00\x12\x41\n\x0fGetOpenDocument\x12\x14.OpenDocumentRequest\x1a\x16.google.protobuf.Empty\"\x00\x12G\n\x0fGetExhibitAlias\x12\x19.ExhibitLabelAliasRequest\x1a\x17.ExhibitLabelAliasReply\"\x00\x62\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR,])
 
@@ -129,7 +129,7 @@ _OPENDOCUMENTREQUEST = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='texts', full_name='OpenDocumentRequest.texts', index=1,
-      number=2, type=11, cpp_type=10, label=3,
+      number=2, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -147,7 +147,7 @@ _OPENDOCUMENTREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=178,
-  serialized_end=246,
+  serialized_end=229,
 )
 
 
@@ -178,8 +178,8 @@ _EXHIBITLABELALIASREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=248,
-  serialized_end=289,
+  serialized_start=231,
+  serialized_end=272,
 )
 
 
@@ -217,8 +217,8 @@ _ANSWERWITHTEXTID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=291,
-  serialized_end=342,
+  serialized_start=274,
+  serialized_end=325,
 )
 
 
@@ -249,8 +249,8 @@ _QAREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=344,
-  serialized_end=401,
+  serialized_start=327,
+  serialized_end=384,
 )
 
 
@@ -281,12 +281,11 @@ _EXHIBITLABELALIASREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=403,
-  serialized_end=444,
+  serialized_start=386,
+  serialized_end=427,
 )
 
 _QAREQUEST.fields_by_name['texts'].message_type = _RPCEXHIBITTEXT
-_OPENDOCUMENTREQUEST.fields_by_name['texts'].message_type = _RPCEXHIBITTEXT
 _QAREPLY.fields_by_name['answer_with_text_id'].message_type = _ANSWERWITHTEXTID
 DESCRIPTOR.message_types_by_name['RpcExhibitText'] = _RPCEXHIBITTEXT
 DESCRIPTOR.message_types_by_name['QARequest'] = _QAREQUEST
@@ -355,8 +354,8 @@ _MYSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=447,
-  serialized_end=635,
+  serialized_start=430,
+  serialized_end=618,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetAnswer',
