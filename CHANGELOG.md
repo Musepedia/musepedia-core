@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased 1.2.0
+
+### Added
+
+- 基于OpenAI GPT-3.5 API的对话生成，结合用户输入与预设的模板构造prompt
+
+## 1.1.1 - 2023/03/02
+
+### Fixed
+
+- 修复rpc方法无法调用的bug
+- 修复获取Open Document时返回文档id应为int类型
+
 ## 1.1.0 - 2023/01/16
 
 ### Changed

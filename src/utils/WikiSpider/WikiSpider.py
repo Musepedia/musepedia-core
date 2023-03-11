@@ -3,8 +3,11 @@
 import requests
 from bs4 import BeautifulSoup
 from loguru import logger
+
+from src.common.exception.ExceptionHandler import catch
 from src.utils.WikiSpider.langconv import *
 from src.utils.ESTools import ESTools
+from Config import PROXY
 
 
 def hk2s(context: str) -> str:
@@ -118,7 +121,10 @@ class WikiSpider:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                           "Chrome/106.0.0.0 Safari/537.36 "
         }
+        self.es = ESTools()
+        self.proxy = {"http": PROXY}
 
+    @catch(Exception)
     def call_spider(self, keys: [str]):
         """
         根据关键词在Wikipedia上进行对应文章的爬虫
@@ -130,9 +136,10 @@ class WikiSpider:
             responses = requests.get(
                 "https://zh.wikipedia.org/wiki/" + key,
                 headers=self.header,
-                timeout=100
+                timeout=100, 
+                verify=False,
+                proxies=self.proxy
             )
-            es = ESTools()
             html = responses.text
             soup = BeautifulSoup(html, "lxml")
             pageinfo = ((soup.body.find(id="content").find(id="bodyContent")
@@ -167,11 +174,12 @@ class WikiSpider:
             # 文章长度处理
             paragraph = divide_paragraph(paragraph)
             # 导入es
-            _id = es.get_document_count()
+            _id = self.es.get_document_count()
             for _title in paragraph:
                 _id += 1
-                es.createDocument(name=key, title=_title, content=paragraph[_title], _id=_id)
+                self.es.create_document(name=key, title=_title, content=paragraph[_title], _id=_id)
 
+    @catch(Exception)
     def get_keys_1_recursive(self, original_key: str):
         """
         查询wikipedia上该original_key资料所有有超链接的关键词
@@ -182,7 +190,9 @@ class WikiSpider:
         response = requests.get(
             "https://zh.wikipedia.org/wiki/" + original_key,
             headers=self.header,
-            timeout=100
+            timeout=100, 
+            verify=False,
+            proxies=self.proxy
         )
 
         html = response.text
@@ -192,9 +202,8 @@ class WikiSpider:
             (soup.body.find(id="content").find(id="bodyContent").find(id="mw-content-text"))
         ).find(class_="mw-parser-output")
 
-        es = ESTools()
         keys = list()
-        if not es.hasKey(original_key):
+        if not self.es.has_key(original_key):
             keys.append(original_key)
         tt = pageinfo.find_all('p')
         for j in tt:
@@ -202,7 +211,7 @@ class WikiSpider:
             for i in tt:
                 if i['href'][0:7] == '/wiki/%':
                     key = Converter("zh-hans").convert(i.text)
-                    if not es.hasKey(key):
+                    if not self.es.has_key(key):
                         keys.append(key)
                     else:
                         continue
@@ -213,4 +222,3 @@ if __name__ == '__main__':
     # serve()
     spider = WikiSpider()
     spider.call_spider(["狼"])
-

@@ -21,9 +21,9 @@ cd src/qa
 mkdir models
 ```
 
-启动grpc服务
+启动grpc服务，提供4个命令行参数(`--qa`表示启动QA服务，`--no-qa`表示不启动QA服务，`--gpt`和`--no-gpt`同理)
 ```shell
-python -m src.rpc.server
+python -m src.rpc.server --qa --gpt
 ```
 
 运行或测试单个模块

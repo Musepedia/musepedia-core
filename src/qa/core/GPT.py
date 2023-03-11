@@ -5,6 +5,7 @@ import openai
 from Config import OPENAI_API_KEY, OPENAI_ORGANIZATION
 from src.common.exception.ExceptionHandler import check_length, catch
 from src.common.log.GPTLogging import gpt_logging
+from src.common.log.ModelLogging import model_logging
 from src.common.utils.Template import template
 from src.qa.utils.TemplateUtil import TemplateUtil
 
@@ -33,6 +34,7 @@ class GPT:
     MODEL = 'gpt-3.5-turbo'
     TEMPLATE_DIR_PATH = '../templates/'
 
+    @model_logging('GPT模型')
     def __init__(self, model=MODEL, template_dir_path=TEMPLATE_DIR_PATH):
         self._template_dir_path = template_dir_path
         self._template_util = TemplateUtil(self._template_dir_path)

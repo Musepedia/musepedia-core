@@ -27,7 +27,7 @@ message QARequest {
 
 message OpenDocumentRequest {
     string label = 1;
-    repeated RpcExhibitText texts = 2;
+    repeated string texts = 2;
 }
 
 message ExhibitLabelAliasRequest {

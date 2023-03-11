@@ -43,9 +43,13 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
     def GetOpenDocument(self, request: QA_pb2.OpenDocumentRequest, context):
         original_keys = []
         for text in request.texts:
-            original_keys.append(text.text)
+            for key in self._nlp_util.get_keyword(text):
+                original_keys.append(key)
+
         for one_key in original_keys:
             self._wiki_spider_util.call_spider(self._wiki_spider_util.get_keys_1_recursive(one_key))
+
+        return QA_pb2.google_dot_protobuf_dot_empty__pb2.Empty()
 
     def GetExhibitAlias(self, request: QA_pb2.ExhibitLabelAliasRequest, context):
         alias_list = self._nlp_util.get_exhibit_alias(request.texts)
@@ -75,10 +79,12 @@ class GPTService(GPT_pb2_grpc.GPTServiceServicer):
 
 @service_logging
 @catch(KeyboardInterrupt)
-def serve():
+def serve(load_qa=False, load_gpt=False):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    QA_pb2_grpc.add_MyServiceServicer_to_server(Greeter(), server)
-    GPT_pb2_grpc.add_GPTServiceServicer_to_server(GPTService(), server)
+    if load_qa:
+        QA_pb2_grpc.add_MyServiceServicer_to_server(Greeter(), server)
+    if load_gpt:
+        GPT_pb2_grpc.add_GPTServiceServicer_to_server(GPTService(), server)
     server.add_insecure_port('[::]:{0}'.format(GRPC_PORT))
     server.start()
     server.wait_for_termination()
