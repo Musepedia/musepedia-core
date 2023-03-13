@@ -55,6 +55,9 @@ class ESTools:
                 },
                 "source": {
                     "type": "keyword"
+                },
+                "valid": {
+                    "type": "long"
                 }
             }
 
@@ -75,10 +78,11 @@ class ESTools:
         """
         self.es.indices.delete(index=self.index_name)
 
-    def create_document(self, name: str, title: str, content: str, _id: int, source='wiki'):
+    def create_document(self, name: str, title: str, content: str, _id: int, source='wiki', valid=0):
         """
         在paragraphs下新建文档
 
+        :param valid: 是否检查过
         :param name:（展品）名字
         :param title:（展品）当前文档的标题——大致内容
         :param content:（展品）文档内容
@@ -86,7 +90,7 @@ class ESTools:
         :param source: 文档来源
         """
 
-        doc = {'name': name, 'title': title, 'content': content, 'source': source}
+        doc = {'name': name, 'title': title, 'content': content, 'source': source, 'valid': valid}
         try:
             res = self.es.create(index=self.index_name, document=doc, id=str(_id))
             logger.info(res)
@@ -111,3 +115,9 @@ class ESTools:
         :return:符合关键词的文档
         """
         return self.es.search(index=self.index_name, query=body, size=k)["hits"]["hits"]
+
+
+if __name__ == "__main__":
+    es = ESTools()
+    es.delete_index()
+    es.create_index()
