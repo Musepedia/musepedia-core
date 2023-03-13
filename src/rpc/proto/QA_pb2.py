@@ -11,7 +11,6 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -20,9 +19,8 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16src/rpc/proto/QA.proto\x1a\x1bgoogle/protobuf/empty.proto\"*\n\x0eRpcExhibitText\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04text\x18\x02 \x01(\t\"M\n\tQARequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\x12\x0e\n\x06status\x18\x03 \x01(\x05\"3\n\x13OpenDocumentRequest\x12\r\n\x05label\x18\x01 \x01(\t\x12\r\n\x05texts\x18\x02 \x03(\t\")\n\x18\x45xhibitLabelAliasRequest\x12\r\n\x05texts\x18\x01 \x03(\t\"3\n\x10\x41nswerWithTextId\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0f\n\x07text_id\x18\x02 \x01(\x03\"9\n\x07QAReply\x12.\n\x13\x61nswer_with_text_id\x18\x01 \x01(\x0b\x32\x11.AnswerWithTextId\")\n\x16\x45xhibitLabelAliasReply\x12\x0f\n\x07\x61liases\x18\x01 \x03(\t2\xbc\x01\n\tMyService\x12#\n\tGetAnswer\x12\n.QARequest\x1a\x08.QAReply\"\x00\x12\x41\n\x0fGetOpenDocument\x12\x14.OpenDocumentRequest\x1a\x16.google.protobuf.Empty\"\x00\x12G\n\x0fGetExhibitAlias\x12\x19.ExhibitLabelAliasRequest\x1a\x17.ExhibitLabelAliasReply\"\x00\x62\x06proto3'
-  ,
-  dependencies=[google_dot_protobuf_dot_empty__pb2.DESCRIPTOR,])
+  serialized_pb=b'\n\x16src/rpc/proto/QA.proto\"*\n\x0eRpcExhibitText\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04text\x18\x02 \x01(\t\"M\n\tQARequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\x12\x0e\n\x06status\x18\x03 \x01(\x05\")\n\x18\x45xhibitLabelAliasRequest\x12\r\n\x05texts\x18\x01 \x03(\t\"3\n\x10\x41nswerWithTextId\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0f\n\x07text_id\x18\x02 \x01(\x03\"9\n\x07QAReply\x12.\n\x13\x61nswer_with_text_id\x18\x01 \x01(\x0b\x32\x11.AnswerWithTextId\")\n\x16\x45xhibitLabelAliasReply\x12\x0f\n\x07\x61liases\x18\x01 \x03(\t2\xa8\x01\n\tMyService\x12#\n\tGetAnswer\x12\n.QARequest\x1a\x08.QAReply\"\x00\x12-\n\x13GetAnswerWithOpenQA\x12\n.QARequest\x1a\x08.QAReply\"\x00\x12G\n\x0fGetExhibitAlias\x12\x19.ExhibitLabelAliasRequest\x1a\x17.ExhibitLabelAliasReply\"\x00\x62\x06proto3'
+)
 
 
 
@@ -61,8 +59,8 @@ _RPCEXHIBITTEXT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=55,
-  serialized_end=97,
+  serialized_start=26,
+  serialized_end=68,
 )
 
 
@@ -107,47 +105,8 @@ _QAREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=99,
-  serialized_end=176,
-)
-
-
-_OPENDOCUMENTREQUEST = _descriptor.Descriptor(
-  name='OpenDocumentRequest',
-  full_name='OpenDocumentRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='label', full_name='OpenDocumentRequest.label', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='texts', full_name='OpenDocumentRequest.texts', index=1,
-      number=2, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=178,
-  serialized_end=229,
+  serialized_start=70,
+  serialized_end=147,
 )
 
 
@@ -178,8 +137,8 @@ _EXHIBITLABELALIASREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=231,
-  serialized_end=272,
+  serialized_start=149,
+  serialized_end=190,
 )
 
 
@@ -217,8 +176,8 @@ _ANSWERWITHTEXTID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=274,
-  serialized_end=325,
+  serialized_start=192,
+  serialized_end=243,
 )
 
 
@@ -249,8 +208,8 @@ _QAREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=327,
-  serialized_end=384,
+  serialized_start=245,
+  serialized_end=302,
 )
 
 
@@ -281,15 +240,14 @@ _EXHIBITLABELALIASREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=386,
-  serialized_end=427,
+  serialized_start=304,
+  serialized_end=345,
 )
 
 _QAREQUEST.fields_by_name['texts'].message_type = _RPCEXHIBITTEXT
 _QAREPLY.fields_by_name['answer_with_text_id'].message_type = _ANSWERWITHTEXTID
 DESCRIPTOR.message_types_by_name['RpcExhibitText'] = _RPCEXHIBITTEXT
 DESCRIPTOR.message_types_by_name['QARequest'] = _QAREQUEST
-DESCRIPTOR.message_types_by_name['OpenDocumentRequest'] = _OPENDOCUMENTREQUEST
 DESCRIPTOR.message_types_by_name['ExhibitLabelAliasRequest'] = _EXHIBITLABELALIASREQUEST
 DESCRIPTOR.message_types_by_name['AnswerWithTextId'] = _ANSWERWITHTEXTID
 DESCRIPTOR.message_types_by_name['QAReply'] = _QAREPLY
@@ -309,13 +267,6 @@ QARequest = _reflection.GeneratedProtocolMessageType('QARequest', (_message.Mess
   # @@protoc_insertion_point(class_scope:QARequest)
   })
 _sym_db.RegisterMessage(QARequest)
-
-OpenDocumentRequest = _reflection.GeneratedProtocolMessageType('OpenDocumentRequest', (_message.Message,), {
-  'DESCRIPTOR' : _OPENDOCUMENTREQUEST,
-  '__module__' : 'src.rpc.proto.QA_pb2'
-  # @@protoc_insertion_point(class_scope:OpenDocumentRequest)
-  })
-_sym_db.RegisterMessage(OpenDocumentRequest)
 
 ExhibitLabelAliasRequest = _reflection.GeneratedProtocolMessageType('ExhibitLabelAliasRequest', (_message.Message,), {
   'DESCRIPTOR' : _EXHIBITLABELALIASREQUEST,
@@ -354,8 +305,8 @@ _MYSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=430,
-  serialized_end=618,
+  serialized_start=348,
+  serialized_end=516,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetAnswer',
@@ -368,12 +319,12 @@ _MYSERVICE = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
-    name='GetOpenDocument',
-    full_name='MyService.GetOpenDocument',
+    name='GetAnswerWithOpenQA',
+    full_name='MyService.GetAnswerWithOpenQA',
     index=1,
     containing_service=None,
-    input_type=_OPENDOCUMENTREQUEST,
-    output_type=google_dot_protobuf_dot_empty__pb2._EMPTY,
+    input_type=_QAREQUEST,
+    output_type=_QAREPLY,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

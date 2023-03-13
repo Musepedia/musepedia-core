@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from loguru import logger
 
 from src.common.exception.ExceptionHandler import catch
+from src.common.log.ModelLogging import model_logging
 from src.utils.WikiSpider.langconv import *
 from src.utils.ESTools import ESTools
 from Config import PROXY
@@ -116,6 +117,7 @@ class WikiSpider:
     Wikipedia爬虫，从Wikipedia上爬取关键词对应的文章内容
     """
 
+    @model_logging('Wikipedia爬虫')
     def __init__(self):
         self.header = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "

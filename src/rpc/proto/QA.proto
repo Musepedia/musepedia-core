@@ -1,13 +1,11 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-
 // The greeting service definition.
 service MyService {
     // Sends a greeting
     rpc GetAnswer (QARequest) returns (QAReply) {}
 
-    rpc GetOpenDocument(OpenDocumentRequest) returns (google.protobuf.Empty) {}
+    rpc GetAnswerWithOpenQA (QARequest) returns (QAReply) {}
 
     rpc GetExhibitAlias(ExhibitLabelAliasRequest) returns (ExhibitLabelAliasReply) {}
 }
@@ -23,11 +21,6 @@ message QARequest {
     string question = 1;
     repeated RpcExhibitText texts = 2;
     int32 status = 3;
-}
-
-message OpenDocumentRequest {
-    string label = 1;
-    repeated string texts = 2;
 }
 
 message ExhibitLabelAliasRequest {
