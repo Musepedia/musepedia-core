@@ -7,7 +7,6 @@ from loguru import logger
 from src.common.exception.ExceptionHandler import catch
 from src.utils.WikiSpider.langconv import *
 from src.utils.ESTools import ESTools
-from Config import PROXY
 
 
 def hk2s(context: str) -> str:
@@ -122,7 +121,6 @@ class WikiSpider:
                           "Chrome/106.0.0.0 Safari/537.36 "
         }
         self.es = ESTools()
-        self.proxy = {"http": PROXY}
 
     @catch(Exception)
     def call_spider(self, keys: [str]):
@@ -137,8 +135,7 @@ class WikiSpider:
                 "https://zh.wikipedia.org/wiki/" + key,
                 headers=self.header,
                 timeout=100, 
-                verify=False,
-                proxies=self.proxy
+                verify=False
             )
             html = responses.text
             soup = BeautifulSoup(html, "lxml")
@@ -191,8 +188,7 @@ class WikiSpider:
             "https://zh.wikipedia.org/wiki/" + original_key,
             headers=self.header,
             timeout=100, 
-            verify=False,
-            proxies=self.proxy
+            verify=False
         )
 
         html = response.text
