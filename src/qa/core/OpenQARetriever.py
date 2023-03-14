@@ -23,7 +23,7 @@ class OpenQARetriever:
 
         return len(texts) == len(titles)
 
-    def get_top_k_text(self, question: str, k: int, name=None) -> [(str, str)]:
+    def get_top_k_text(self, question: str, k: int, name: str = None) -> [(str, str)]:
         """
         从texts中找出最可能包含question对应回答的k个文本
 
@@ -37,6 +37,11 @@ class OpenQARetriever:
         body = {
             'bool': {
                 "must": [
+                    {
+                        "term": {
+                            "valid": 1
+                        }
+                    },
                     {
                         "match": {
                             "content": question

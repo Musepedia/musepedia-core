@@ -8,7 +8,6 @@ from src.common.exception.ExceptionHandler import catch
 from src.common.log.ModelLogging import model_logging
 from src.utils.WikiSpider.langconv import *
 from src.utils.ESTools import ESTools
-from Config import PROXY
 
 
 def hk2s(context: str) -> str:
@@ -120,11 +119,10 @@ class WikiSpider:
     @model_logging('Wikipedia爬虫')
     def __init__(self):
         self.header = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (HTML, like Gecko) "
                           "Chrome/106.0.0.0 Safari/537.36 "
         }
         self.es = ESTools()
-        self.proxy = {"http": PROXY}
 
     @catch(Exception)
     def call_spider(self, keys: [str]):
@@ -139,8 +137,7 @@ class WikiSpider:
                 "https://zh.wikipedia.org/wiki/" + key,
                 headers=self.header,
                 timeout=100, 
-                verify=False,
-                proxies=self.proxy
+                verify=False
             )
             html = responses.text
             soup = BeautifulSoup(html, "lxml")
@@ -193,8 +190,7 @@ class WikiSpider:
             "https://zh.wikipedia.org/wiki/" + original_key,
             headers=self.header,
             timeout=100, 
-            verify=False,
-            proxies=self.proxy
+            verify=False
         )
 
         html = response.text
