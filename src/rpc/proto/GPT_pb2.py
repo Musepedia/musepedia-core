@@ -19,95 +19,10 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x17src/rpc/proto/GPT.proto\"W\n\nGPTContext\x12\x15\n\ruser_question\x18\x01 \x01(\t\x12\x15\n\rexhibit_label\x18\x02 \x01(\t\x12\x1b\n\x13\x65xhibit_description\x18\x03 \x01(\t\"9\n\x06Museum\x12\x13\n\x0bmuseum_name\x18\x01 \x01(\t\x12\x1a\n\x12museum_description\x18\x02 \x01(\t\"C\n\nGPTRequest\x12\x1c\n\x07\x63ontext\x18\x01 \x01(\x0b\x32\x0b.GPTContext\x12\x17\n\x06museum\x18\x02 \x01(\x0b\x32\x07.Museum\"`\n\x08GPTReply\x12\x0e\n\x06prompt\x18\x01 \x01(\t\x12\x12\n\ncompletion\x18\x02 \x01(\t\x12\x15\n\rprompt_tokens\x18\x03 \x01(\x05\x12\x19\n\x11\x63ompletion_tokens\x18\x04 \x01(\x05\x32:\n\nGPTService\x12,\n\x10GetAnswerWithGPT\x12\x0b.GPTRequest\x1a\t.GPTReply\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x17src/rpc/proto/GPT.proto\"\x88\x01\n\nGPTRequest\x12\x15\n\ruser_question\x18\x01 \x01(\t\x12\x15\n\rexhibit_label\x18\x02 \x01(\t\x12\x1b\n\x13\x65xhibit_description\x18\x03 \x01(\t\x12\x13\n\x0bmuseum_name\x18\x04 \x01(\t\x12\x1a\n\x12museum_description\x18\x05 \x01(\t\"`\n\x08GPTReply\x12\x0e\n\x06prompt\x18\x01 \x01(\t\x12\x12\n\ncompletion\x18\x02 \x01(\t\x12\x15\n\rprompt_tokens\x18\x03 \x01(\x05\x12\x19\n\x11\x63ompletion_tokens\x18\x04 \x01(\x05\x32:\n\nGPTService\x12,\n\x10GetAnswerWithGPT\x12\x0b.GPTRequest\x1a\t.GPTReply\"\x00\x62\x06proto3'
 )
 
 
-
-
-_GPTCONTEXT = _descriptor.Descriptor(
-  name='GPTContext',
-  full_name='GPTContext',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='user_question', full_name='GPTContext.user_question', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='exhibit_label', full_name='GPTContext.exhibit_label', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='exhibit_description', full_name='GPTContext.exhibit_description', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=27,
-  serialized_end=114,
-)
-
-
-_MUSEUM = _descriptor.Descriptor(
-  name='Museum',
-  full_name='Museum',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='museum_name', full_name='Museum.museum_name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='museum_description', full_name='Museum.museum_description', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=116,
-  serialized_end=173,
-)
 
 
 _GPTREQUEST = _descriptor.Descriptor(
@@ -119,16 +34,37 @@ _GPTREQUEST = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='context', full_name='GPTRequest.context', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='user_question', full_name='GPTRequest.user_question', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='museum', full_name='GPTRequest.museum', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='exhibit_label', full_name='GPTRequest.exhibit_label', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='exhibit_description', full_name='GPTRequest.exhibit_description', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='museum_name', full_name='GPTRequest.museum_name', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='museum_description', full_name='GPTRequest.museum_description', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -144,8 +80,8 @@ _GPTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=175,
-  serialized_end=242,
+  serialized_start=28,
+  serialized_end=164,
 )
 
 
@@ -197,31 +133,13 @@ _GPTREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=244,
-  serialized_end=340,
+  serialized_start=166,
+  serialized_end=262,
 )
 
-_GPTREQUEST.fields_by_name['context'].message_type = _GPTCONTEXT
-_GPTREQUEST.fields_by_name['museum'].message_type = _MUSEUM
-DESCRIPTOR.message_types_by_name['GPTContext'] = _GPTCONTEXT
-DESCRIPTOR.message_types_by_name['Museum'] = _MUSEUM
 DESCRIPTOR.message_types_by_name['GPTRequest'] = _GPTREQUEST
 DESCRIPTOR.message_types_by_name['GPTReply'] = _GPTREPLY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
-GPTContext = _reflection.GeneratedProtocolMessageType('GPTContext', (_message.Message,), {
-  'DESCRIPTOR' : _GPTCONTEXT,
-  '__module__' : 'src.rpc.proto.GPT_pb2'
-  # @@protoc_insertion_point(class_scope:GPTContext)
-  })
-_sym_db.RegisterMessage(GPTContext)
-
-Museum = _reflection.GeneratedProtocolMessageType('Museum', (_message.Message,), {
-  'DESCRIPTOR' : _MUSEUM,
-  '__module__' : 'src.rpc.proto.GPT_pb2'
-  # @@protoc_insertion_point(class_scope:Museum)
-  })
-_sym_db.RegisterMessage(Museum)
 
 GPTRequest = _reflection.GeneratedProtocolMessageType('GPTRequest', (_message.Message,), {
   'DESCRIPTOR' : _GPTREQUEST,
@@ -246,8 +164,8 @@ _GPTSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=342,
-  serialized_end=400,
+  serialized_start=264,
+  serialized_end=322,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetAnswerWithGPT',

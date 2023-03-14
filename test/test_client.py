@@ -26,7 +26,7 @@ def test_client_connection(execution_number, stub):
                                texts=[test_text],
                                status=1)
     response = stub.GetAnswer(request)
-    assert response.answer_with_text_id.answer == '3000年', '抽取错误，答案为{0}'.format(response.answer_with_text_id.answer)
+    assert response.answer == '3000年', '抽取错误，答案为{0}'.format(response.answer)
 
 
 def test_dpr_with_gpu():

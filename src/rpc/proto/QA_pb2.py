@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16src/rpc/proto/QA.proto\"*\n\x0eRpcExhibitText\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04text\x18\x02 \x01(\t\"M\n\tQARequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\x12\x0e\n\x06status\x18\x03 \x01(\x05\")\n\x18\x45xhibitLabelAliasRequest\x12\r\n\x05texts\x18\x01 \x03(\t\"3\n\x10\x41nswerWithTextId\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0f\n\x07text_id\x18\x02 \x01(\x03\"9\n\x07QAReply\x12.\n\x13\x61nswer_with_text_id\x18\x01 \x01(\x0b\x32\x11.AnswerWithTextId\")\n\x16\x45xhibitLabelAliasReply\x12\x0f\n\x07\x61liases\x18\x01 \x03(\t2\xa8\x01\n\tMyService\x12#\n\tGetAnswer\x12\n.QARequest\x1a\x08.QAReply\"\x00\x12-\n\x13GetAnswerWithOpenQA\x12\n.QARequest\x1a\x08.QAReply\"\x00\x12G\n\x0fGetExhibitAlias\x12\x19.ExhibitLabelAliasRequest\x1a\x17.ExhibitLabelAliasReply\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x16src/rpc/proto/QA.proto\"*\n\x0eRpcExhibitText\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04text\x18\x02 \x01(\t\"M\n\tQARequest\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x1e\n\x05texts\x18\x02 \x03(\x0b\x32\x0f.RpcExhibitText\x12\x0e\n\x06status\x18\x03 \x01(\x05\")\n\x18\x45xhibitLabelAliasRequest\x12\r\n\x05texts\x18\x01 \x03(\t\"@\n\x07QAReply\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12\x0f\n\x07text_id\x18\x02 \x01(\x03\x12\x14\n\x0c\x66rom_open_qa\x18\x03 \x01(\x08\")\n\x16\x45xhibitLabelAliasReply\x12\x0f\n\x07\x61liases\x18\x01 \x03(\t2\xa8\x01\n\tMyService\x12#\n\tGetAnswer\x12\n.QARequest\x1a\x08.QAReply\"\x00\x12-\n\x13GetAnswerWithOpenQA\x12\n.QARequest\x1a\x08.QAReply\"\x00\x12G\n\x0fGetExhibitAlias\x12\x19.ExhibitLabelAliasRequest\x1a\x17.ExhibitLabelAliasReply\"\x00\x62\x06proto3'
 )
 
 
@@ -142,25 +142,32 @@ _EXHIBITLABELALIASREQUEST = _descriptor.Descriptor(
 )
 
 
-_ANSWERWITHTEXTID = _descriptor.Descriptor(
-  name='AnswerWithTextId',
-  full_name='AnswerWithTextId',
+_QAREPLY = _descriptor.Descriptor(
+  name='QAReply',
+  full_name='QAReply',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='answer', full_name='AnswerWithTextId.answer', index=0,
+      name='answer', full_name='QAReply.answer', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='text_id', full_name='AnswerWithTextId.text_id', index=1,
+      name='text_id', full_name='QAReply.text_id', index=1,
       number=2, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='from_open_qa', full_name='QAReply.from_open_qa', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -177,39 +184,7 @@ _ANSWERWITHTEXTID = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=192,
-  serialized_end=243,
-)
-
-
-_QAREPLY = _descriptor.Descriptor(
-  name='QAReply',
-  full_name='QAReply',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='answer_with_text_id', full_name='QAReply.answer_with_text_id', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=245,
-  serialized_end=302,
+  serialized_end=256,
 )
 
 
@@ -240,16 +215,14 @@ _EXHIBITLABELALIASREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=304,
-  serialized_end=345,
+  serialized_start=258,
+  serialized_end=299,
 )
 
 _QAREQUEST.fields_by_name['texts'].message_type = _RPCEXHIBITTEXT
-_QAREPLY.fields_by_name['answer_with_text_id'].message_type = _ANSWERWITHTEXTID
 DESCRIPTOR.message_types_by_name['RpcExhibitText'] = _RPCEXHIBITTEXT
 DESCRIPTOR.message_types_by_name['QARequest'] = _QAREQUEST
 DESCRIPTOR.message_types_by_name['ExhibitLabelAliasRequest'] = _EXHIBITLABELALIASREQUEST
-DESCRIPTOR.message_types_by_name['AnswerWithTextId'] = _ANSWERWITHTEXTID
 DESCRIPTOR.message_types_by_name['QAReply'] = _QAREPLY
 DESCRIPTOR.message_types_by_name['ExhibitLabelAliasReply'] = _EXHIBITLABELALIASREPLY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -275,13 +248,6 @@ ExhibitLabelAliasRequest = _reflection.GeneratedProtocolMessageType('ExhibitLabe
   })
 _sym_db.RegisterMessage(ExhibitLabelAliasRequest)
 
-AnswerWithTextId = _reflection.GeneratedProtocolMessageType('AnswerWithTextId', (_message.Message,), {
-  'DESCRIPTOR' : _ANSWERWITHTEXTID,
-  '__module__' : 'src.rpc.proto.QA_pb2'
-  # @@protoc_insertion_point(class_scope:AnswerWithTextId)
-  })
-_sym_db.RegisterMessage(AnswerWithTextId)
-
 QAReply = _reflection.GeneratedProtocolMessageType('QAReply', (_message.Message,), {
   'DESCRIPTOR' : _QAREPLY,
   '__module__' : 'src.rpc.proto.QA_pb2'
@@ -305,8 +271,8 @@ _MYSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=348,
-  serialized_end=516,
+  serialized_start=302,
+  serialized_end=470,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetAnswer',

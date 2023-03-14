@@ -27,15 +27,11 @@ message ExhibitLabelAliasRequest {
     repeated string texts = 1;
 }
 
-// define type
-message AnswerWithTextId {
-    string answer = 1;
-    int64 text_id = 2;
-}
-
 // The response message containing the best answer extracted from the texts with the text
 message QAReply {
-    AnswerWithTextId answer_with_text_id = 1;
+    string answer = 1;
+    int64 text_id = 2;
+    bool from_open_qa = 3;
 }
 
 message ExhibitLabelAliasReply {

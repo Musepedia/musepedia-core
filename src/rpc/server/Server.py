@@ -26,28 +26,28 @@ class Greeter(QA_pb2_grpc.MyServiceServicer):
         self._nlp_util = NLPUtil()
 
     def GetAnswer(self, request, context):
-        answer_with_text_id = QA_pb2.AnswerWithTextId()
         answer, text_id = self._qa_reader.get_answer(request.question, request.texts)
         if request.status == 2:
             answer = self._map_util.render_map(answer)
-        answer_with_text_id.answer = answer
-        answer_with_text_id.text_id = text_id
 
-        return QA_pb2.QAReply(answer_with_text_id=answer_with_text_id)
+        return QA_pb2.QAReply(answer=answer,
+                              text_id=text_id,
+                              from_open_qa=False)
 
     def GetAnswerWithOpenQA(self, request: QA_pb2.QARequest, context):
-        answer_with_text_id = QA_pb2.AnswerWithTextId()
+        from_open_qa = False
         answer, text_id = self._qa_reader.get_answer(request.question, request.texts)
         if len(answer) == 0:
             # 没有答案，尝试OpenQA获取新的答案
             open_documents = self._open_qa_retriever.get_top_k_text(request.question, 15)
             answer, text_id = self._qa_reader.get_answer(request.question, open_documents)
+            from_open_qa = True
         if request.status == 2:
             answer = self._map_util.render_map(answer)
-        answer_with_text_id.answer = answer
-        answer_with_text_id.text_id = text_id
 
-        return QA_pb2.QAReply(answer_with_text_id=answer_with_text_id)
+        return QA_pb2.QAReply(answer=answer,
+                              text_id=text_id,
+                              from_open_qa=from_open_qa)
 
     def GetExhibitAlias(self, request: QA_pb2.ExhibitLabelAliasRequest, context):
         alias_list = self._nlp_util.get_exhibit_alias(request.texts)
@@ -77,11 +77,11 @@ class GPTService(GPT_pb2_grpc.GPTServiceServicer):
         self._gpt = GPT(template_dir_path=TEMPLATE_PATH)
 
     def GetAnswerWithGPT(self, request: GPT_pb2.GPTRequest, context):
-        user_prompt = self._gpt.create_user_prompt(GPTContext(user_question=request.context.user_question,
-                                                              exhibit_label=request.context.exhibit_label,
-                                                              exhibit_description=request.context.exhibit_description))
-        system_prompt = self._gpt.create_system_prompt(museum_name=request.museum.museum_name,
-                                                       museum_description=request.museum.museum_description)
+        user_prompt = self._gpt.create_user_prompt(GPTContext(user_question=request.user_question,
+                                                              exhibit_label=request.exhibit_label,
+                                                              exhibit_description=request.exhibit_description))
+        system_prompt = self._gpt.create_system_prompt(museum_name=request.museum_name,
+                                                       museum_description=request.museum_description)
         gpt_completion = self._gpt.generate(user_prompt, system_prompt)
         if gpt_completion is not None:
             return GPT_pb2.GPTReply(prompt=gpt_completion.prompt,
