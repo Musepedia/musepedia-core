@@ -36,9 +36,6 @@ ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://pt.musepedia.cn:9
 ELASTIC_SEARCH_USERNAME = os.getenv('ELASTIC_SEARCH_USERNAME', 'elastic')
 ELASTIC_SEARCH_PASSWORD = os.getenv('ELASTIC_SEARCH_PASSWORD', 'r2tiq2FqAd5')
 
-# proxy代理
-PROXY = os.getenv('PROXY', 'http://34.82.217.181:5555')
-
 # OpenAI API Key
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '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')
 
