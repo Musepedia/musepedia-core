@@ -25,6 +25,9 @@ FACEBOOK_DPR_MODEL_PATH = os.getenv('FACEBOOK_DPR_MODEL_PATH', 'src/qa/models/dp
 # DPR模型（基于RocketQA）的路径
 ROCKETQA_MODEL_PATH = os.getenv('ROCKETQA_MODEL_PATH', 'src/qa/models/zh_dureader_de/config.json')
 
+# 用于构造prompt的模版存储路径
+TEMPLATE_PATH = os.getenv('TEMPLATE_PATH', 'src/qa/templates/')
+
 # 是否使用GPU (CUDA)运行深度学习模型，False表示使用CPU，True表示在有GPU可用的情况下使用
 USE_GPU = os.getenv('USE_GPU', True)
 
@@ -33,3 +36,8 @@ ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://pt.musepedia.cn:9
 ELASTIC_SEARCH_USERNAME = os.getenv('ELASTIC_SEARCH_USERNAME', 'elastic')
 ELASTIC_SEARCH_PASSWORD = os.getenv('ELASTIC_SEARCH_PASSWORD', 'r2tiq2FqAd5')
 
+# OpenAI API Key
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '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')
+
+# OpenAI Organization
+OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION', 'org-7ZRKpCfXN1him01dkzObK6px')

@@ -4,7 +4,7 @@ import pytest
 
 from Config import GRPC_PORT
 from src.qa.core.DensePassageRetriever import DensePassageRetriever
-from src.rpc.proto import QA_pb2, QA_pb2_grpc
+from src.rpc.proto import QA_pb2, QA_pb2_grpc, ES_pb2
 from src.utils.NLPUtil import NLPUtil
 
 
@@ -26,7 +26,7 @@ def test_client_connection(execution_number, stub):
                                texts=[test_text],
                                status=1)
     response = stub.GetAnswer(request)
-    assert response.answer_with_text_id.answer == '3000年', '抽取错误，答案为{0}'.format(response.answer_with_text_id.answer)
+    assert response.answer == '3000年', '抽取错误，答案为{0}'.format(response.answer)
 
 
 def test_dpr_with_gpu():
@@ -43,11 +43,9 @@ def test_dpr_with_gpu():
 
 
 def test_get_open_document(stub):
-    test_text = QA_pb2.RpcExhibitText()
-    test_text.id = 1
-    test_text.text = '银杏（学名：Ginkgo biloba），落叶乔木，寿命可达3000年以上。'
+    test_text = '银杏（学名：Ginkgo biloba），落叶乔木，寿命可达3000年以上。'
 
-    request = QA_pb2.OpenDocumentRequest(label='银杏',
+    request = ES_pb2.OpenDocumentRequest(label='银杏',
                                          texts=[test_text])
 
     stub.GetOpenDocument(request)

@@ -1,6 +1,6 @@
 # MGS-core
 - 本仓库包含项目的Question Answering和Recommender System算法，不包含业务代码（数据分析模块除外）
-- **Version 1.1.1**
+- **Version 1.2.0**
 
 ### Usage
 根据`requirements.txt`要求配置依赖（请根据本地CUDA版本安装合适的PyTorch v1.5.1，参考https://pytorch.org/get-started/previous-versions/）
@@ -21,9 +21,9 @@ cd src/qa
 mkdir models
 ```
 
-启动grpc服务
+启动grpc服务，提供6个命令行参数(`--qa`表示启动QA服务，`--no-qa`表示不启动QA服务，`--gpt`, `--no-gpt`, `--spider`和`--no-spider`同理)
 ```shell
-python -m src.rpc.server
+python -m src.rpc.server --qa --gpt
 ```
 
 运行或测试单个模块

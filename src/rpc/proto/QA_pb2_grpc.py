@@ -2,7 +2,6 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 from src.rpc.proto import QA_pb2 as src_dot_rpc_dot_proto_dot_QA__pb2
 
 
@@ -21,10 +20,10 @@ class MyServiceStub(object):
                 request_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.QARequest.SerializeToString,
                 response_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.QAReply.FromString,
                 )
-        self.GetOpenDocument = channel.unary_unary(
-                '/MyService/GetOpenDocument',
-                request_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.OpenDocumentRequest.SerializeToString,
-                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+        self.GetAnswerWithOpenQA = channel.unary_unary(
+                '/MyService/GetAnswerWithOpenQA',
+                request_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.QARequest.SerializeToString,
+                response_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.QAReply.FromString,
                 )
         self.GetExhibitAlias = channel.unary_unary(
                 '/MyService/GetExhibitAlias',
@@ -44,7 +43,7 @@ class MyServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetOpenDocument(self, request, context):
+    def GetAnswerWithOpenQA(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -64,10 +63,10 @@ def add_MyServiceServicer_to_server(servicer, server):
                     request_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.QARequest.FromString,
                     response_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.QAReply.SerializeToString,
             ),
-            'GetOpenDocument': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetOpenDocument,
-                    request_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.OpenDocumentRequest.FromString,
-                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            'GetAnswerWithOpenQA': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAnswerWithOpenQA,
+                    request_deserializer=src_dot_rpc_dot_proto_dot_QA__pb2.QARequest.FromString,
+                    response_serializer=src_dot_rpc_dot_proto_dot_QA__pb2.QAReply.SerializeToString,
             ),
             'GetExhibitAlias': grpc.unary_unary_rpc_method_handler(
                     servicer.GetExhibitAlias,
@@ -103,7 +102,7 @@ class MyService(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def GetOpenDocument(request,
+    def GetAnswerWithOpenQA(request,
             target,
             options=(),
             channel_credentials=None,
@@ -113,9 +112,9 @@ class MyService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/MyService/GetOpenDocument',
-            src_dot_rpc_dot_proto_dot_QA__pb2.OpenDocumentRequest.SerializeToString,
-            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+        return grpc.experimental.unary_unary(request, target, '/MyService/GetAnswerWithOpenQA',
+            src_dot_rpc_dot_proto_dot_QA__pb2.QARequest.SerializeToString,
+            src_dot_rpc_dot_proto_dot_QA__pb2.QAReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

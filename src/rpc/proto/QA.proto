@@ -1,13 +1,11 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-
 // The greeting service definition.
 service MyService {
     // Sends a greeting
     rpc GetAnswer (QARequest) returns (QAReply) {}
 
-    rpc GetOpenDocument(OpenDocumentRequest) returns (google.protobuf.Empty) {}
+    rpc GetAnswerWithOpenQA (QARequest) returns (QAReply) {}
 
     rpc GetExhibitAlias(ExhibitLabelAliasRequest) returns (ExhibitLabelAliasReply) {}
 }
@@ -25,24 +23,15 @@ message QARequest {
     int32 status = 3;
 }
 
-message OpenDocumentRequest {
-    string label = 1;
-    repeated string texts = 2;
-}
-
 message ExhibitLabelAliasRequest {
     repeated string texts = 1;
 }
 
-// define type
-message AnswerWithTextId {
-    string answer = 1;
-    int64 text_id = 2;
-}
-
 // The response message containing the best answer extracted from the texts with the text
 message QAReply {
-    AnswerWithTextId answer_with_text_id = 1;
+    string answer = 1;
+    int64 text_id = 2;
+    bool from_open_qa = 3;
 }
 
 message ExhibitLabelAliasReply {
