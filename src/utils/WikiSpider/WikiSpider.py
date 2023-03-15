@@ -219,4 +219,6 @@ class WikiSpider:
 if __name__ == '__main__':
     # serve()
     spider = WikiSpider()
-    spider.call_spider(["狼"])
+    re = spider.get_keys_1_recursive("狼")
+    print(re)
+    # spider.call_spider(["狼"])

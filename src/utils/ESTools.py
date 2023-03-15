@@ -116,6 +116,20 @@ class ESTools:
         """
         return self.es.search(index=self.index_name, query=body, size=k)["hits"]["hits"]
 
+    def update_doc(self, body: dict, _id):
+        """
+        更新文档内容
+
+        :param body: 文档内容
+        :param _id: 文档id
+        :return: 更新结果
+        """
+        try:
+            re = self.es.update(index=self.index_name, id=_id, body=body)
+            logger.info(re)
+        except:
+            logger.warning("文档更新失败！")
+
 
 if __name__ == "__main__":
     es = ESTools()
