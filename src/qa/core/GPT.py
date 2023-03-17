@@ -60,7 +60,7 @@ class GPT:
                                             exhibit_description: str,
                                             user_question: str,
                                             variables=None) -> str:
-        return self._template_util.render_template('exhibit_user_question', variables)
+        return self._template_util.render_template('exhibit_user_question.jinja', variables)
 
     @template()
     def create_system_prompt(self,
