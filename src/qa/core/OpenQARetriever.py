@@ -3,6 +3,12 @@
 from src.utils.ESTools import ESTools
 
 
+class OpenDocument:
+    def __init__(self, text: str, id: int):
+        self.text = text
+        self.id = id
+
+
 class OpenQARetriever:
     """
     开放域问答（Open domain QA）的检索器，用于从大量文本中找出最可能包含问题对应回答的文本
@@ -23,7 +29,7 @@ class OpenQARetriever:
 
         return len(texts) == len(titles)
 
-    def get_top_k_text(self, question: str, k: int, name: str = None) -> [(str, str)]:
+    def get_top_k_text(self, question: str, k: int, name: str = None) -> [OpenDocument]:
         """
         从texts中找出最可能包含question对应回答的k个文本
 
@@ -59,7 +65,7 @@ class OpenQARetriever:
         result = list()
         es = ESTools()
         for i in es.do_search(body=body, k=k):
-            result.append((i['_source']['content'], int(i['_id'])))
+            result.append(OpenDocument(i['_source']['content'], int(i['_id'])))
         return result
 
 
