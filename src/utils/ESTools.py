@@ -16,6 +16,8 @@ class ESTools:
             hosts=host,
             basic_auth=(username, password)
         )
+        if not self.es.ping():
+            raise ValueError('ElasticSearch连接失败，原因：{0}'.format(self.es.info()))
 
     def has_key(self, key: str) -> bool:
         """
