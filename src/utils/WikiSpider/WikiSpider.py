@@ -141,42 +141,47 @@ class WikiSpider:
             )
             html = responses.text
             soup = BeautifulSoup(html, "lxml")
-            pageinfo = ((soup.body.find(id="content").find(id="bodyContent")
-                         .find(id="mw-content-text"))).find(class_="mw-parser-output")
+            try:
+                pageinfo = ((soup.body.find(id="content").find(id="bodyContent")
+                             .find(id="mw-content-text"))).find(class_="mw-parser-output")
 
-            # 获取目录
-            cata = pageinfo.find(id="toc").select("li")
-            catalogue = []
-            for i in cata:
-                if i.attrs['class'][0] == 'toclevel-1':
-                    s = i.text.split('\n')[0]
-                    catalogue.append(s[2:len(s)])
+                # 获取目录
+                cata = pageinfo.find(id="toc").select("li")
+                catalogue = []
+                for i in cata:
+                    if i.attrs['class'][0] == 'toclevel-1':
+                        s = i.text.split('\n')[0]
+                        catalogue.append(s[2:len(s)])
 
-            # 主要处理部分
-            context = pageinfo.find_all(['p', 'h2'])
-            paragraph = {"概述": ""}
-            title = "概述"
-            f = True
-            for one_sentence in context:
-                m = one_sentence.text
-                if f:
-                    paragraph[title] = hk2s(m)
-                    f = False
-                if m[0:len(m) - 4] in catalogue:
-                    title = hk2s(m[0:len(m) - 4])
-                    paragraph[title] = ""
-                else:
-                    paragraph[title] += hk2s(m)
-            # 文章符号处理
-            for _title in paragraph:
-                paragraph[_title] = context_process(paragraph[_title])
-            # 文章长度处理
-            paragraph = divide_paragraph(paragraph)
-            # 导入es
-            _id = self.es.get_document_count()
-            for _title in paragraph:
-                _id += 1
-                self.es.create_document(name=key, title=_title, content=paragraph[_title], _id=_id)
+                # 主要处理部分
+                context = pageinfo.find_all(['p', 'h2'])
+                paragraph = {"概述": ""}
+                title = "概述"
+                f = True
+                for one_sentence in context:
+                    m = one_sentence.text
+                    if f:
+                        paragraph[title] = hk2s(m)
+                        f = False
+                    if m[0:len(m) - 4] in catalogue:
+                        title = hk2s(m[0:len(m) - 4])
+                        paragraph[title] = ""
+                    else:
+                        paragraph[title] += hk2s(m)
+                # 文章符号处理
+                for _title in paragraph:
+                    paragraph[_title] = context_process(paragraph[_title])
+                # 文章长度处理
+                paragraph = divide_paragraph(paragraph)
+                # 导入es
+                _id = self.es.get_document_count()
+                for _title in paragraph:
+                    _id += 1
+                    self.es.create_document(name=key, title=_title, content=paragraph[_title], _id=_id)
+            except:
+                logger.warning("没有爬取内容")
+
+
 
     @catch(Exception)
     def get_keys_1_recursive(self, original_key: str):
@@ -195,24 +200,26 @@ class WikiSpider:
 
         html = response.text
         soup = BeautifulSoup(html, "lxml")
+        try:
+            pageinfo = (
+                (soup.body.find(id="content").find(id="bodyContent").find(id="mw-content-text"))
+            ).find(class_="mw-parser-output")
 
-        pageinfo = (
-            (soup.body.find(id="content").find(id="bodyContent").find(id="mw-content-text"))
-        ).find(class_="mw-parser-output")
-
-        keys = list()
-        if not self.es.has_key(original_key):
-            keys.append(original_key)
-        tt = pageinfo.find_all('p')
-        for j in tt:
-            tt = j.find_all('a')
-            for i in tt:
-                if i['href'][0:7] == '/wiki/%':
-                    key = Converter("zh-hans").convert(i.text)
-                    if not self.es.has_key(key):
-                        keys.append(key)
-                    else:
-                        continue
+            keys = list()
+            if not self.es.has_key(original_key):
+                keys.append(original_key)
+            tt = pageinfo.find_all('p')
+            for j in tt:
+                tt = j.find_all('a')
+                for i in tt:
+                    if i['href'][0:7] == '/wiki/%':
+                        key = Converter("zh-hans").convert(i.text)
+                        if not self.es.has_key(key):
+                            keys.append(key)
+                        else:
+                            continue
+        except:
+            logger.warning("不存在递归爬取的内容")
         return keys
 
 
@@ -221,4 +228,5 @@ if __name__ == '__main__':
     spider = WikiSpider()
     re = spider.get_keys_1_recursive("狼")
     print(re)
+    spider.call_spider(re)
     # spider.call_spider(["狼"])
