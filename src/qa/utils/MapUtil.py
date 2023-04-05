@@ -292,7 +292,7 @@ class MapUtil:
             Map()
                 .add("", data, flag, is_map_symbol_show=False, name_map=self._country_dict)
                 .set_global_opts(
-                visualmap_opts=opts.VisualMapOpts(is_show=False, max_=2, range_color=[self._THEME_COLOR]),
+                visualmap_opts=opts.VisualMapOpts(is_show=False, max_=2, range_color=[self.THEME_COLOR]),
             )
                 .set_series_opts(
                 label_opts=opts.LabelOpts(is_show=False)
