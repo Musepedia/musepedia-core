@@ -1,2 +1,2 @@
-{% if qa_prompt %}Q: {% endif %}结合这段介绍：{{ exhibit_description }}介绍{{ exhibit_label }}。
+{% if qa_prompt %}Q: {% endif %}结合介绍：{% for description in exhibit_descriptions %}{{ description }}{% endfor %}介绍展品：{{ exhibit_label }}。
 {% if qa_prompt %}A: {% endif %}

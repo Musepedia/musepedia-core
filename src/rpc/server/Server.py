@@ -7,7 +7,7 @@ from src.common.exception.ExceptionHandler import catch
 from src.common.log.ServiceLogging import service_logging
 from concurrent import futures
 from Config import GRPC_PORT, ROBERTA_MODEL_PATH, TEMPLATE_PATH
-from src.qa.core.GPT import GPT, GPTContext
+from src.qa.core.GPT import GPT, GPTContext, Exhibit
 from src.qa.core.OpenQARetriever import OpenQARetriever
 from src.rpc.proto import QA_pb2_grpc, QA_pb2, GPT_pb2, GPT_pb2_grpc, ES_pb2_grpc, ES_pb2
 from src.qa.core.QuestionAnswering import QAReader
@@ -78,10 +78,8 @@ class GPTService(GPT_pb2_grpc.GPTServiceServicer):
 
     def GetAnswerWithGPT(self, request: GPT_pb2.GPTRequest, context):
         user_prompt = self._gpt.create_user_prompt(GPTContext(user_question=request.user_question,
-                                                              exhibit_label=request.exhibit_label,
-                                                              exhibit_description=request.exhibit_description))
-        system_prompt = self._gpt.create_system_prompt(museum_name=request.museum_name,
-                                                       museum_description=request.museum_description)
+                                                              exhibits=[Exhibit(exhibit.label, exhibit.descriptions) for exhibit in request.exhibits]))
+        system_prompt = self._gpt.create_system_prompt(museum_name=request.museum_name)
         gpt_completion = self._gpt.generate(user_prompt, system_prompt)
         if gpt_completion is not None:
             return GPT_pb2.GPTReply(prompt=gpt_completion.prompt,

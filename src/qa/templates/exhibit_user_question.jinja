@@ -1,2 +1,2 @@
-{% if qa_prompt %}Q: {% endif %}结合这段介绍：{{ exhibit_description }}{{ user_question }}
+{% if qa_prompt %}Q: {% endif %}{% for key, value in exhibit_label_description_dict.items() %}结合展品{{ key }}介绍：{% for description in value %}{{ description }}{% endfor %}{% endfor %}回答游客的提问：{{user_question}}
 {% if qa_prompt %}A: {% endif %}

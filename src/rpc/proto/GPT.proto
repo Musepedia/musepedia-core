@@ -4,12 +4,15 @@ service GPTService {
     rpc GetAnswerWithGPT (GPTRequest) returns (GPTReply) {}
 }
 
+message Exhibit {
+    string label = 1;
+    repeated string descriptions = 2;
+}
+
 message GPTRequest {
     string user_question = 1;
-    string exhibit_label = 2;
-    string exhibit_description = 3;
-    string museum_name = 4;
-    string museum_description = 5;
+    repeated Exhibit exhibits = 2;
+    string museum_name = 3;
 }
 
 message GPTReply {
