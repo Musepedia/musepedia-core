@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from dataclasses import dataclass
 
 import openai
@@ -92,8 +94,8 @@ class GPT:
                                                             context.user_question)
         else:
             return self.create_exhibit_description_prompt(context.qa_prompt,
-                                                          context.exhibits.exhibit_label,
-                                                          context.exhibits.exhibit_descriptions)
+                                                          context.exhibits[0].exhibit_label,
+                                                          context.exhibits[0].exhibit_descriptions)
 
     @catch(Exception)
     @check_length(4096)
